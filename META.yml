@@ -1,0 +1,24 @@
+--- #YAML:1.0
+name:                Net-FreshBooks-API
+version:             0.01
+abstract:            ~
+license:             perl
+generated_by:        ExtUtils::MakeMaker version 6.32
+distribution_type:   module
+requires:     
+    Carp:                          0
+    Class::Accessor::Fast:         0
+    Clone:                         0
+    Data::Dumper:                  0
+    File::Slurp:                   0
+    Lingua::EN::Inflect:           0
+    LWP::UserAgent:                0
+    Sub::Override:                 0
+    Test::More:                    0
+    Test::WWW::Mechanize:          0
+    Test::XML:                     0
+    URI:                           0
+    XML::Simple:                   0
+meta-spec:
+    url:     http://module-build.sourceforge.net/META-spec-v1.2.html
+    version: 1.2
