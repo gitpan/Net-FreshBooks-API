@@ -8,9 +8,6 @@
         <username>janedoe</username>
         <work_phone>(555) 123-4567</work_phone>
         <home_phone>(555) 234-5678</home_phone>
-        <mobile/>
-        <fax/>
-        <notes/>
         <p_street1>123 Fake St.</p_street1>
         <p_street2>Unit 555</p_street2>
         <p_city>New York</p_city>
@@ -18,11 +15,5 @@
         <p_country>United States</p_country>
         <p_code>553132</p_code>
         <password>seCret!7</password>
-        <s_street1/>
-        <s_street2/>
-        <s_city/>
-        <s_state/>
-        <s_country/>
-        <s_code/>
     </client>
 </request>

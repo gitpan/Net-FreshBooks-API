@@ -1,29 +1,37 @@
-#
-
 package Net::FreshBooks::API;
 use base 'Class::Accessor::Fast';
 
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
-use Carp;
+use Carp qw( carp croak );
 use URI;
 use Data::Dumper;
+use Path::Class;
 
-# use Log::Log4perl;
-# Log::Log4perl->easy_init('OFF')
-#     unless Log::Log4perl->initialized();
-
-__PACKAGE__->mk_accessors(qw(account_name auth_token api_version auth_realm));
+__PACKAGE__->mk_accessors(
+    'account_name',         #
+    'auth_token',           #
+    'verbose',              #
+    'communication_log',    #
+    'api_version',          #
+    'auth_realm',           #
+);
 
 use Net::FreshBooks::API::Client;
 use Net::FreshBooks::API::Invoice;
+use Net::FreshBooks::API::Payment;
+use Net::FreshBooks::API::Recurring;
 
 =head1 NAME
 
 Net::FreshBooks::API - easy OO access to the FreshBooks.com API
+
+=head1 VERSION
+
+Version 0.02
 
 =head1 SYNOPSIS
 
@@ -70,6 +78,49 @@ Net::FreshBooks::API - easy OO access to the FreshBooks.com API
     # save the invoice and then send it
     $invoice->create;
     $invoice->send_by_email;
+    
+    ############################################
+    # create a recurring item
+    ############################################
+
+    use Net::FreshBooks::API;
+    use Net::FreshBooks::API::InvoiceLine;
+    use DateTime;
+    
+    # auth_token and account_name come from FreshBooks
+    my $fb = Net::FreshBooks::API->new(
+        {   auth_token   => $auth_token,
+            account_name => $account_name,
+        }
+    );
+    
+    # find the first client returned
+    my $client = $fb->client->list->next;
+    
+    # create a line item
+    my $line = Net::FreshBooks::API::InvoiceLine->new({
+        name         => "Widget",
+        description  => "Net::FreshBooks::API Widget",
+        unit_cost    => '1.99',
+        quantity     => 1,
+        tax1_name    => "GST",
+        tax1_percent => 5,
+    });
+    
+    # create the recurring item
+    my $recurring_item = $fb->recurring->create({
+        client_id   => $client->client_id,
+        date        => DateTime->now->add( days => 2 )->ymd, # YYYY-MM-DD
+        frequency   => 'monthly',
+        lines       => [ $line ],
+        notes       => 'Created by Net::FreshBooks::API',
+    });
+    
+    $recurring_item->po_number( 999 );
+    $recurring_item->update;
+    
+    See also L<Net::FreshBooks::API::Base> for other available methods, such
+    as create, update, get, list and delete.
 
 =head1 WARNING
 
@@ -86,6 +137,8 @@ If you need other details they should be very easy to add - please get in touch.
 L<FreshBooks.com> is a website that lets you create, send and manage invoices.
 This module is an OO abstraction of their API that lets you work with Clients,
 Invoices etc as if they were standard Perl objects.
+
+Repository: L<http://github.com/oalders/net-freshbooks-api/tree/master>
 
 =head1 METHODS
 
@@ -111,7 +164,45 @@ sub new {
     $args->{api_version} ||= 2.1;
     $args->{auth_realm}  ||= 'FreshBooks';
 
+    # configure the logging
+    if ( $args->{verbose} ) {
+        if ( ref $args->{verbose} ne 'CODE' ) {
+            $args->{verbose} = sub {
+                my ( $level, $message ) = @_;
+                $message .= "\n" if $message !~ m{\n/z}x;
+                carp "$level: $message";
+            };
+        }
+    } else {
+        $args->{verbose} = sub { 1; };
+    }
+
+    if ( $args->{communication_log} ) {
+        if ( ref $args->{communication_log} ne 'CODE' ) {
+            my $file = file( $args->{communication_log} )->absolute;
+            $args->{communication_log} = sub {
+                my ($message) = @_;
+                my $fh = $file->open('a')
+                    || croak "Could not open for append: $file";
+                $fh->print(
+                    $message->as_string . "\n\n" . '-' x 80 . "\n\n" );
+            };
+        }
+    } else {
+        $args->{communication_log} = sub { 1; };
+    }
+
     return bless {%$args}, $class;
+}
+
+sub _log { ## no critic
+    my $self = shift;
+    return $self->verbose->(@_);
+}
+
+sub _clog { ## no critic
+    my $self = shift;
+    return $self->communication_log->(@_);
 }
 
 =head2 ping
@@ -126,7 +217,11 @@ valid.
 
 sub ping {
     my $self = shift;
-    $self->client->list();
+    eval { $self->client->list() };
+
+    $self->_log( debug => $@ ? "ping failed: $@" : "ping succeeded" );
+
+    return if $@;
     return 1;
 }
 
@@ -151,7 +246,7 @@ sub service_url {
     return $uri;
 }
 
-=head2 client, invoice
+=head2 client, invoice, payment, recurring
 
   my $client = $fb->client->create({...});
 
@@ -171,6 +266,18 @@ sub invoice {
     return Net::FreshBooks::API::Invoice->new( { _fb => $self, %$args } );
 }
 
+sub payment {
+    my $self = shift;
+    my $args = shift || {};
+    return Net::FreshBooks::API::Payment->new( { _fb => $self, %$args } );
+}
+
+sub recurring {
+    my $self = shift;
+    my $args = shift || {};
+    return Net::FreshBooks::API::Recurring->new( { _fb => $self, %$args } );
+}
+
 =head2 ua
 
   my $ua = $fb->ua;
@@ -179,8 +286,11 @@ Return a LWP::UserAgent object to use when contacting the server.
 
 =cut
 
+my $CACHED_UA = undef;
+
 sub ua {
     my $self = shift;
+    return $CACHED_UA if $CACHED_UA;
 
     my $class = ref($self) || $self;
     my $version = $VERSION;
@@ -188,6 +298,7 @@ sub ua {
     my $ua = LWP::UserAgent->new(
         agent             => "$class (v$version)",
         protocols_allowed => ['https'],
+        keep_alive        => 10,
     );
 
     $ua->credentials(    #
@@ -204,30 +315,62 @@ sub ua {
         ''                                # password (none - all in username)
     );
 
-    return $ua;
+    return $CACHED_UA = $ua;
 }
 
-# =head2 log
-#
-#   my $logger = $fb->log;
-#
-# docs...
-#
-# =cut
-#
-# my $LOGGER = undef;
-#
-# sub log {
-#     my $self = shift;
-#     local $Log::Log4perl::caller_depth = $Log::Log4perl::caller_depth + 1;
-#     return $LOGGER ||= Log::Log4perl->get_logger;
-# }
+=head2 delete_everything_from_this_test_account
+
+    my $deletion_count
+        = $fb->delete_everything_from_this_test_account();
+
+Deletes all clients, invoices and payments from this account. This is convenient
+when testing but potentially very dangerous. To prevent accidential deletions
+this method has a very long name, and will croak if the account name does not
+end with 'test'.
+
+As a general rule it is best to put this at the B<start> of your test scripts
+rather than at the end. This will let you inspect your account at the end of the
+test script to see what is left behind.
+
+=cut
+
+sub delete_everything_from_this_test_account {
+    my $self = shift;
+
+    my $name = $self->account_name;
+    croak(    "ERROR: account_name must end with 'test' to use"
+            . " the method delete_everything_on_this_test_account"
+            . " - your account name is '$name'" )
+        if ( $name !~ m{ test \z }x && $name ne 'netfreshbooksapi' );
+
+    my $delete_count = 0;
+
+    # note: 'payments' can't be deleted
+    my @names_to_delete = qw( invoice client );
+
+    # clear out all existing clients etc on this account.
+    foreach my $object_name (@names_to_delete) {
+        my $objects_to_delete = $self->$object_name->list();
+        while ( my $obj = $objects_to_delete->next ) {
+            $obj->delete;
+            $delete_count++;
+        }
+    }
+
+    return $delete_count;
+}
 
 =head1 AUTHOR
 
 Edmund von der Burg C<<evdb@ecclestoad.co.uk>>
 
 Developed for HinuHinu L<http://www.hinuhinu.com/>.
+
+Recurring item support by:
+
+Olaf Alders olaf@raybec.com
+
+Developed for Raybec Communications L<http://www.raybec.com>
 
 =head1 LICENCE
 

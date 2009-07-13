@@ -5,3 +5,4 @@
 .bak$
 .old$
 ^Net-FreshBooks-API-
+.DS_Store

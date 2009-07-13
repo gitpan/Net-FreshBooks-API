@@ -2,22 +2,6 @@
 <request method="invoice.create">
     <invoice>
         <client_id>1</client_id>
-        <date/>
-        <discount/>
-        <first_name/>
-        <last_name/>
-        <notes/>
-        <number/>
-        <organization/>
-        <p_city/>
-        <p_code/>
-        <p_country/>
-        <p_state/>
-        <p_street1/>
-        <p_street2/>
-        <po_number/>
-        <status/>
-        <terms/>
         <lines>
             <line>
                 <name>Test line 1</name>

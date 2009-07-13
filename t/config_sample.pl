@@ -16,6 +16,7 @@ my %CONFIG = (
     # DO NOT USE A REAL ACCOUNT HERE - CREATE A TEST ACCOUNT.
     # tests will delete clients from the account
 
+    test_email => 'test@example.com',    # test email address
     account_name => 'yourname',   # from 'https://yourname.freshbooks.com/...'
     auth_token   => '123...def',  # provided when you enable API access
 );

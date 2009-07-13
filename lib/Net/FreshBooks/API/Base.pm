@@ -4,22 +4,57 @@ use base 'Class::Accessor::Fast';
 use strict;
 use warnings;
 
-use Data::Dumper;
-use Carp;
+use Data::Dump qw( dump );
+use Carp qw( croak );
 use Clone qw(clone);
 
 use Net::FreshBooks::API::Iterator;
 
-use XML::Simple qw( :strict );
+use XML::LibXML ':libxml';
 use LWP::UserAgent;
 
 my %plural_to_singular = (
-    clients => 'client',
-    nesteds => 'nested',    # for testing
-    lines   => 'line',
+    clients  => 'client',
+    invoices => 'invoice',
+    lines    => 'line',
+    payments => 'payment',
+    nesteds  => 'nested',    # for testing
 );
 
 __PACKAGE__->mk_accessors('_fb');
+
+=head2 new_from_node
+
+  my $new_object = $class->new_from_node( $node );
+
+Create a new object from the node given.
+
+=cut
+
+sub new_from_node {
+    my $class = shift;
+    my $node  = shift;
+
+    my $self = bless {}, $class;
+
+    $self->_fill_in_from_node($node);
+
+    return $self;
+}
+
+=head2 copy
+
+  my $new_object = $self->copy(  );
+
+Returns a new object with the fb object set on it.
+
+=cut
+
+sub copy {
+    my $self  = shift;
+    my $class = ref $self;
+    return $class->new( { _fb => $self->_fb } );
+}
 
 =head2 create
 
@@ -41,8 +76,12 @@ sub create {
 
     # create the arguments
     my %create_args = ();
-    $create_args{$_} = $self->$_
-        for ( $self->field_names_rw );
+    $create_args{$_} = $self->$_ for ( $self->field_names_rw );
+
+    # remove arguments that have not been set (and so are undef)
+    delete $create_args{$_}    #
+        for grep { !defined $create_args{$_} }
+        keys %create_args;
 
     my $res = $self->send_request(
         {   _method         => $method,
@@ -50,7 +89,10 @@ sub create {
         }
     );
 
-    return $self->get( { $self->id_field => $res->{ $self->id_field } } );
+    my $xpath  = '//response/' . $self->id_field;
+    my $new_id = $res->findvalue($xpath);
+
+    return $self->get( { $self->id_field => $new_id } );
 }
 
 =head2 update
@@ -67,7 +109,9 @@ sub update {
 
     my %args = ();
     $args{$_} = $self->$_ for ( $self->field_names_rw, $self->id_field );
-
+    
+    $self->_fb->_log( debug => dump( \%args ) );
+    
     my $res = $self->send_request(
         {   _method         => $method,
             $self->api_name => \%args,
@@ -96,39 +140,64 @@ sub get {
         }
     );
 
+    return $self->_fill_in_from_node($res);
+}
+
+sub _fill_in_from_node {
+    my $self    = shift;
+    my $in_node = shift;
+
+    # parse it as a new node so that the matching is more reliable
+    my $parser = XML::LibXML->new();
+    my $node   = $parser->parse_string( $in_node->toString );
+
     # cleanup all the keys
     delete $self->{$_}    #
-        for grep { !m/^_/ } keys %$self;
+        for grep { !m/^_/x } keys %$self;
 
     my $fields_config = $self->fields;
 
-    # copy across th e new values provided
-    foreach my $key ( grep { !m/^_/ } keys %$res ) {
-        my $val = $res->{$key};
+    # copy across the new values provided
+    foreach my $key ( grep { !m/^_/x } keys %$fields_config ) {
+
+        my $xpath .= sprintf "//%s/%s", $self->node_name, $key;
 
         # check that this field is not a special one
         if ( my $made_of = $fields_config->{$key}{made_of} ) {
 
+            my ($match) = $node->findnodes($xpath);
+
             if ( $fields_config->{$key}{presented_as} eq 'array' ) {
-                $val ||= [];
-                $self->{$key} = [ map { $made_of->new($_) } @$val ];
+
+                my @new_objects =    #
+                    map { $made_of->new_from_node($_) }    #
+                    grep { $_->nodeType eq XML_ELEMENT_NODE }
+                    $match->childNodes();
+
+                $self->{$key} = \@new_objects;
             } else {
-                $self->{$key} = $val ? $made_of->new($val) : undef;
+                $self->{$key}                              #
+                    = $match                               #
+                    ? $made_of->new_from_node($match)      #
+                    : undef;
             }
 
         } else {
+            my $val = $node->findvalue($xpath);
             $self->{$key} = $val;
         }
     }
 
     return $self;
+
 }
 
 =head2 list
 
   my $iterator = $self->list( $args );
 
-Returns an iterator that represents the list fetched from the server. See L<Net::FreshBooks::API::Iterator> for details.
+Returns an iterator that represents the list fetched from the server. 
+See L<Net::FreshBooks::API::Iterator> for details.
 
 =cut
 
@@ -151,7 +220,8 @@ Delete the given object.
 
 =cut
 
-sub delete {
+sub delete { ## no critic
+    ## use critic
     my $self = shift;
 
     my $method   = $self->method_string('delete');
@@ -172,7 +242,8 @@ sub delete {
 
   my $response_data = $self->send_request( $args );
 
-Turn the args into xml, send it to FreshBooks, recieve back the XML and convertit back into a perl data structure.
+Turn the args into xml, send it to FreshBooks, recieve back the XML and 
+convert it back into a perl data structure.
 
 =cut
 
@@ -180,11 +251,30 @@ sub send_request {
     my $self = shift;
     my $args = shift;
 
-    my $create_xml  = $self->parameters_to_request_xml($args);
-    my $return_xml  = $self->send_xml_to_freshbooks($create_xml);
-    my $return_data = $self->response_xml_to_parameters($return_xml);
+    my $fb     = $self->_fb;
+    my $method = $args->{_method};
+    
+    my %frequency_fix = %{ $self->_frequency_cleanup };
+    
+    my $pattern = join "|", keys %frequency_fix;
 
-    return $return_data;
+    $fb->_log( debug => "Sending request for $method" );
+
+    my $request_xml   = $self->parameters_to_request_xml($args);
+    
+    $request_xml =~ s{<frequency>($pattern)</frequency>}{<frequency>$frequency_fix{$1}</frequency>}gxms;
+    
+    $fb->_log( debug => $request_xml );
+    
+    my $return_xml    = $self->send_xml_to_freshbooks($request_xml);
+    
+    $fb->_log( debug => $return_xml );
+    
+    my $response_node = $self->response_xml_to_node($return_xml);
+
+    $fb->_log( debug => "Received response for $method" );
+
+    return $response_node;
 }
 
 =head2 method_string
@@ -213,8 +303,22 @@ Returns the name that should be used in the API for this class.
 sub api_name {
     my $self = shift;
     my $name = ref($self) || $self;
-    $name =~ s{^.*::}{};
+    $name =~ s{^.*::}{}x;
     return lc $name;
+}
+
+=head2 node_name
+
+  my $node_name = $self->node_name(  );
+
+Returns the name that should be used in the XML nodes for this class. Normally
+this is the same as the C<api_name> but can be overridden if needed.
+
+=cut
+
+sub node_name {
+    my $self = shift;
+    return $self->api_name;
 }
 
 =head2 id_field
@@ -240,12 +344,13 @@ Return the names of all the fields.
 
 sub field_names {
     my $self = shift;
-    return sort keys %{ $self->fields };
+    my @names = sort keys %{ $self->fields };
+    return @names;
 }
 
 =head2 field_names_rw
 
-  my @names = $self->field_names();
+  my @names = $self->field_names_rw();
 
 Return the names of all the fields that are marked as read and write.
 
@@ -254,9 +359,12 @@ Return the names of all the fields that are marked as read and write.
 sub field_names_rw {
     my $self   = shift;
     my $fields = $self->fields;
-    return sort
+    
+    my @names = sort
         grep { $fields->{$_}{mutable} }
         keys %$fields;
+        
+    return @names;
 }
 
 =head2 parameters_to_request_xml
@@ -265,7 +373,7 @@ sub field_names_rw {
 
 Takes the parameters given and turns them into the xml that should be sent to
 the server. This has some smarts that works around the tedium of processing perl
-datastructures -> XMl. In particular any key starting with an underscore becomes
+datastructures -> XML. In particular any key starting with an underscore becomes
 an attribute. Any key pointing to an array is wrapped so that it appears
 correctly in the XML.
 
@@ -275,203 +383,97 @@ sub parameters_to_request_xml {
     my $self       = shift;
     my $parameters = clone(shift);
 
-    $self->_massage_contents($parameters);
+    my $dom = XML::LibXML::Document->new( '1.0', 'utf-8' );
 
-    my $req = { request => $parameters, };
+    my $root = XML::LibXML::Element->new('request');
+    $dom->setDocumentElement($root);
 
-    my $xs = XML::Simple->new();
-    return $xs->XMLout(    #
-        $req,              #
-        KeyAttr  => [],
-        KeepRoot => 1,
-        XMLDecl  => '<?xml version="1.0" encoding="utf-8"?>',
-    );
+    $self->construct_element( $root, $parameters );
+
+    return $dom->toString(1);
 }
 
-sub _massage_contents {
-    my $self = shift;
-    my $in   = shift;
+=head2 construct_element( $element, $hashref )
 
-    foreach my $key ( sort keys %$in ) {
-        my $val = $in->{$key};
+Requires an XML::LibXML::Element object, followed by a HASHREF of attributes,
+text nodes, nested values or child elements or some combination thereof.
 
-        # make sure that anything starting with '_' becomes an attr
-        if ( my ($new_key) = $key =~ m{^_(.*)$} ) {
-            $in->{$new_key} = delete $in->{$key};
+=cut
+
+sub construct_element {
+    my $self    = shift;
+    my $element = shift;
+    my $hashref = shift;
+
+    foreach my $key ( sort keys %$hashref ) {
+
+        my $val = $hashref->{$key};
+
+        # keys starting with an underscore are attributes
+        if ( my ($attr_key) = $key =~ m{ \A _ (.*) \z }x ) {
+            $element->setAttribute( $attr_key, $val );
         }
 
-        # pad out arrays
+        # scalar values are text nodes
+        elsif ( ref $val eq '' ) {
+            $element->appendTextChild( $key, $val );
+        }
+
+        # arrayrefs are groups of nested values
         elsif ( ref $val eq 'ARRAY' ) {
 
-            # Find what the singular of the key is
-            my $singular = $plural_to_singular{$key}
-                || croak("Can't turn '$key' into singular");
+            my $singular_key = $plural_to_singular{$key}
+                || croak "couldnot convert '$key' to singular";
 
-            # massage all the entries in the array
-            my @new_values = ();
-            foreach my $entry (@$val) {
-                $self->_massage_contents($entry);
-                push @new_values, $entry;
+            my $wrapper = XML::LibXML::Element->new($key);
+            $element->addChild($wrapper);
+
+            foreach my $entry_val (@$val) {
+                my $entry_node = XML::LibXML::Element->new($singular_key);
+                $wrapper->addChild($entry_node);
+                $self->construct_element( $entry_node, $entry_val );
             }
+        } elsif ( ref $val eq 'HASH' ) {
+            my $wrapper = XML::LibXML::Element->new($key);
+            $element->addChild($wrapper);
 
-            # put the new massage values back onto the data structure
-            $in->{$key} = { $singular => \@new_values };
+            $self->construct_element( $wrapper, $val );
 
         }
 
-        # if it is a hash then run that hash through here
-        elsif ( ref $val eq 'HASH' ) {
-            $self->_massage_contents($val);
-        }
-
-        # If it is a simple scalar then just put it in an array so that
-        # XML::Simple gives it it's own tag.
-        elsif ( ref $val eq '' ) {
-            $in->{$key} = [$val];
-        }
-
-        # Don't know what to do - croak.
-        else {
-            croak "Don't know how to deal with $key => $val";
-        }
     }
-
-    # warn Dumper($in);
-
-    return 1;
+    
+    return;
 }
 
-=head2 response_xml_to_parameters
+=head2 response_xml_to_node
 
-  my $params = $self->response_xml_to_parameters( $xml );
+  my $params = $self->response_xml_to_node( $xml );
 
 Take XML from FB and turn it into a datastructure that is easier to work with.
 
 =cut
 
-sub response_xml_to_parameters {
+sub response_xml_to_node {
     my $self = shift;
-    my $xml = shift || die "No XML passed in";
+    my $xml = shift || croak "No XML passed in";
 
-    my $xs  = XML::Simple->new();
-    my $raw = $xs->XMLin(           #
-        $xml,                       #
-        KeyAttr    => [],
-        ForceArray => 1,
-        KeepRoot   => 1,
-    );
+    # get rid of any namespaces that will prevent simple xpath expressions
+    $xml =~ s{ \s+ xmlns=\S+ }{}xg;
 
-    my $res = $raw->{response}[0];
+    my $parser = XML::LibXML->new();
+    my $dom    = $parser->parse_string($xml);
 
-    # die Dumper( $res );
+    my $response        = $dom->documentElement();
+    my $response_status = $response->getAttribute('status');
 
-    if ( $res->{status} ne 'ok' ) {
-        my $error = join ', ', @{ $res->{error} || [] };
+    if ( $response_status ne 'ok' ) {
+        my @error_nodes = $response->findnodes('/error');
+        my $error = join ', ', map { $_->textContent } @error_nodes;
         croak "FreshBooks server returned error: '$error'";
     }
 
-    $self->_unmassage_contents($res);
-
-    return $res;
-}
-
-sub _unmassage_contents {
-    my $self = shift;
-    my $in   = shift;
-
-    # get the field config
-    my $field_config = $self->fields;
-
-    # warn Dumper($in);
-
-    foreach my $key ( sort keys %$in ) {
-        my $val = $in->{$key};
-
-        # values that are scalar were attributes and should get underscores
-        if ( ref $val eq '' ) {
-            $in->{"_$key"} = delete $in->{$key};
-        }
-
-        # values that are arrays with a single scalar entry
-        elsif (ref $val eq 'ARRAY'
-            && scalar(@$val) == 1
-            && ref $val->[0] eq '' )
-        {
-            $in->{$key} = $val->[0];
-        }
-
-        # if the value is an array with a hash in then it contains a list and
-        # attributes. Promote the attribute up a level and expand the list.
-        elsif ($plural_to_singular{$key}
-            && ref $val eq 'ARRAY'
-            && scalar(@$val) == 1
-            && ref $val->[0] eq 'HASH' )
-        {
-            my $hash = $val->[0];
-
-            my @entries = ();
-
-            foreach my $key ( sort keys %$hash ) {
-                my $val = $hash->{$key};
-
-                if ( ref $val eq '' ) {
-                    $in->{"_$key"} = $hash->{$key};
-                } elsif ( ref $val eq 'ARRAY' ) {
-                    push @entries, @$val;
-                } else {
-                    croak "Error";
-                }
-            }
-
-            $self->_unmassage_contents($_) for @entries;
-
-            $in->{$key} = \@entries;
-
-        }
-
-        # if the value is an array with a hash in it but it is not a plural
-        # word then it is a single item - promote all the key up a level.
-        elsif (ref $val eq 'ARRAY'
-            && scalar(@$val) == 1
-            && ref $val->[0] eq 'HASH' )
-        {
-            my $array = delete $in->{$key};
-            my $hash  = $array->[0];
-
-            foreach my $key ( sort keys %$hash ) {
-                my $val = $hash->{$key};
-
-                if ( ref $val eq '' ) {
-                    $in->{"_$key"} = $hash->{$key};
-                } elsif ( ref $val eq 'ARRAY' ) {
-
-                    if ( my $singular = $plural_to_singular{$key} ) {
-                        my @entries = @{ $val->[0]{$singular} };
-                        $self->_unmassage_contents($_) for @entries;
-                        $in->{$key} = \@entries;
-                    } elsif ( my $made_of = $field_config->{$key}{made_of} ) {
-                        my $args = $val->[0];
-                        $self->_unmassage_contents($args);
-                        $in->{$key} = $made_of->new($args);
-                    } else {
-                        $in->{$key} = ref $val->[0] ? undef : $val->[0];
-                    }
-                } else {
-                    croak "Error";
-                }
-            }
-        }
-
-        # error - should not get here
-        else {
-            warn Dumper($val);
-            croak "Can't process $key => $val.";
-        }
-    }
-
-    # warn Dumper($in);
-
-    return 1;
+    return $response;
 }
 
 =head2 send_xml_to_freshbooks
@@ -489,7 +491,6 @@ sub send_xml_to_freshbooks {
     my $xml_to_send = shift;
     my $fb          = $self->_fb;
     my $ua          = $fb->ua;
-    # my $log         = $fb->log;
 
     my $request = HTTP::Request->new(
         'POST',              # method
@@ -498,18 +499,37 @@ sub send_xml_to_freshbooks {
         $xml_to_send         # content
     );
 
-    # $log->info("Sending request to FreshBooks");
-    # $log->debug( $request->content );
+    $fb->_clog($request);
 
     my $response = $ua->request($request);
 
-    # $log->info("Received response from FreshBooks");
-    # $log->debug( $response->content );
+    $fb->_clog($response);
 
-    croak "Request failed: " . $response->status_line
+    croak "FreshBooks request failed: " . $response->status_line
         unless $response->is_success;
 
     return $response->content;
+}
+
+# When FreshBooks returns info on recurring items, it does not return the same
+# frequency values as the values it requests.  This method provides a lookup
+# table to fix this issue.
+
+sub _frequency_cleanup {
+    
+    my $self = shift;
+    
+    return  {
+        y       => 'yearly',
+        w       => 'weekly',
+        '2w'    => '2 weeks',
+        '4w'    => '4 weeks',
+        m       => 'monthly',
+        '2m'    => '2 months',
+        '3m'    => '3 months',
+        '6m'    => '6 months',
+    };
+    
 }
 
 1;

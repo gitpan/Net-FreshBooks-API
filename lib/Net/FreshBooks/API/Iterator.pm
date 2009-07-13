@@ -7,13 +7,14 @@ use warnings;
 use Net::FreshBooks::API::Base;
 use Data::Dumper;
 use Lingua::EN::Inflect qw( PL );
+use XML::LibXML ':libxml';
 
 __PACKAGE__->mk_accessors(
     'parent_object',    # The object we are iterating for
     'args',             # args used in the search
     'total',            # The total number of results
     'pages',            # the number of result pages
-    'items',            # a list of all items
+    'item_nodes',       # a list of all items
     'current_index',    # which item we are currently on
 );
 
@@ -44,24 +45,36 @@ sub new {
         %{ $self->args },
     };
 
-    my $response_data = $self->parent_object->send_request($request_args);
+    my $list_name = PL( $self->parent_object->api_name );
 
-    $self->pages( $response_data->{_pages} );
-    $self->total( $response_data->{_total} );
-    $self->items( $response_data->{ PL( $self->parent_object->api_name ) } );
+    my $response = $self->parent_object->send_request($request_args);
+    my ($list) = $response->findnodes("//$list_name");
+
+    $self->pages( $list->getAttribute('pages') );
+    $self->total( $list->getAttribute('total') );
+
+    my $parser = XML::LibXML->new();
+
+    my @item_nodes =    #
+        map { $parser->parse_string( $_->toString ) }    # recreate
+        grep { $_->nodeType eq XML_ELEMENT_NODE }        # filter
+        $list->childNodes;
+
+    $self->item_nodes( \@item_nodes );
 
     return $self;
 }
 
 =head2 next
 
-  my $next_result = $iterator->next(  );
+    my $next_result = $iterator->next(  );
 
 Returns the next item in the iterator.
 
 =cut
 
-sub next {
+sub next { ## no critic
+    ## use critic
     my $self = shift;
 
     # work out what the current index should be
@@ -71,13 +84,15 @@ sub next {
 
     # check that there is a next item
     # FIXME - add fetching the next page if needed here
-    my $next_item = $self->items->[$current_index];
-    return unless $next_item;
+    my $next_node = $self->item_nodes->[$current_index];
+    return unless $next_node;
 
     my $id_field = $self->parent_object->id_field;
+    my $next_id  = $next_node->findvalue("//$id_field");
 
-    return $self->parent_object->get(
-        { $id_field => $next_item->{$id_field} } );
+    my $item = $self->parent_object->copy->get( { $id_field => $next_id } );
+
+    return $item;
 }
 
 1;
