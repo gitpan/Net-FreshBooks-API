@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               Net-FreshBooks-API
-version:            0.04
+version:            0.05
 abstract:           ~
 author:  []
 license:            perl
@@ -13,6 +13,7 @@ requires:
     Carp:                 0
     Class::Accessor::Fast:  0
     Clone:                0
+    Crypt::SSLeay:        0
     Data::Dump:           0
     Data::Dumper:         0
     DateTime:             0
@@ -21,6 +22,7 @@ requires:
     File::Spec:           0
     Lingua::EN::Inflect:  0
     LWP::UserAgent:       0
+    Path::Class:          0
     Sub::Override:        0
     Test::More:           0
     Test::Pod:            0
