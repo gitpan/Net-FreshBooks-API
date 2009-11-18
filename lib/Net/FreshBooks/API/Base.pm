@@ -4,15 +4,15 @@ use base 'Class::Accessor::Fast';
 use strict;
 use warnings;
 
-use Data::Dump qw( dump );
-use Carp qw( croak );
+use Carp qw( carp croak );
 use Clone qw(clone);
-
-use Net::FreshBooks::API::Iterator;
-
+use Data::Dump qw( dump );
+#use Devel::SimpleTrace;
 use XML::LibXML ':libxml';
 use XML::Simple;
 use LWP::UserAgent;
+
+use Net::FreshBooks::API::Iterator;
 
 my %plural_to_singular = (
     clients  => 'client',
@@ -204,7 +204,7 @@ sub _fill_in_from_node {
 
   my $iterator = $self->list( $args );
 
-Returns an iterator that represents the list fetched from the server. 
+Returns an iterator that represents the list fetched from the server.
 See L<Net::FreshBooks::API::Iterator> for details.
 
 =cut
@@ -250,7 +250,7 @@ sub delete {    ## no critic
 
   my $response_data = $self->send_request( $args );
 
-Turn the args into xml, send it to FreshBooks, recieve back the XML and 
+Turn the args into xml, send it to FreshBooks, recieve back the XML and
 convert it back into a perl data structure.
 
 =cut
@@ -283,6 +283,8 @@ sub send_request {
     my $response_node = $self->response_xml_to_node($return_xml);
 
     $fb->_log( debug => "Received response for $method" );
+
+    #carp "sending request\n";
 
     return $response_node;
 }
@@ -335,7 +337,7 @@ sub node_name {
 
   my $id_field = $self->id_field(  );
 
-Returns theh id field for this class.
+Returns the id field for this class.
 
 =cut
 
