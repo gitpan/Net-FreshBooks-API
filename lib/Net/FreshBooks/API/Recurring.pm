@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Recurring;
 BEGIN {
-  $Net::FreshBooks::API::Recurring::VERSION = '0.11';
+  $Net::FreshBooks::API::Recurring::VERSION = '0.12';
 }
 
 use Moose;
@@ -66,7 +66,7 @@ Net::FreshBooks::API::Recurring
 
 =head1 VERSION
 
-version 0.11
+version 0.12
 
 =head1 SYNOPSIS
 
@@ -161,7 +161,7 @@ Net::FreshBooks::API::Recurring - FreshBooks Recurring Items
 
 =head1 VERSION
 
-version 0.11
+version 0.12
 
 =head1 AUTHOR
 

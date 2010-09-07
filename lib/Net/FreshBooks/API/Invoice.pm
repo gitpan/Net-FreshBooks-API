@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Invoice;
 BEGIN {
-  $Net::FreshBooks::API::Invoice::VERSION = '0.11';
+  $Net::FreshBooks::API::Invoice::VERSION = '0.12';
 }
 
 use Moose;
@@ -112,7 +112,7 @@ Net::FreshBooks::API::Invoice
 
 =head1 VERSION
 
-version 0.11
+version 0.12
 
 =head1 SYNOPSIS
 

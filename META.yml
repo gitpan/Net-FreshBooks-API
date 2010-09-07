@@ -41,4 +41,4 @@ resources:
   bugtracker: http://rt.cpan.org/NoAuth/Bugs.html?Dist=Net-FreshBooks-API
   homepage: http://github.com/oalders/net-freshbooks-api/tree
   repository: git://github.com/oalders/net-freshbooks-api.git
-version: 0.11
+version: 0.12

@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Links;
 BEGIN {
-  $Net::FreshBooks::API::Links::VERSION = '0.11';
+  $Net::FreshBooks::API::Links::VERSION = '0.12';
 }
 
 use Moose;
@@ -35,7 +35,7 @@ Net::FreshBooks::API::Links
 
 =head1 VERSION
 
-version 0.11
+version 0.12
 
 =head1 AUTHOR
 
