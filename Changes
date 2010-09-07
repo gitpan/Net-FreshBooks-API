@@ -1,0 +1,56 @@
+Revision history for Perl module Net::FreshBooks::API
+
+0.11 2010-08-??
+    - Move distro management to Dist::Zilla
+
+0.10 2009-11-23
+    - Iterator's next() method now returns cloned objects
+    - Added documentation for Invoice links() and list() functionality
+    
+0.09 2009-11-19
+    - Added amount field to recurring items
+    - Added documentation for the lines() method
+
+0.08 2009-11-18
+    - Added explicit documentation for most available methods
+    - Calls to list() no longer perform lookups while iteration takes place.
+      This is no longer necessary after updates to the FreshBooks API in
+      August 2009.  This means that one call to list returns all of the data
+      for the requested page, so multiple API calls are no longer necessary.
+      Multiple API calls will still, of course, be necessary if fetching
+      multiple pages.
+
+0.07 2009-11-05
+    - Added return_uri field to Invoice and Recurring
+    - perltidied source
+
+0.06 2009-08-12
+    - Added XML::Simple and Test::Exception to dependencies
+    - Improved handling of error messages.  In many cases the returned message
+      had been blank
+    - Added test to confirm error messages are being correctly parsed
+    - "verbose" setting is now referred to in the documentation (if only
+      briefly)
+
+0.05 2009-07-16
+    - Added Crypt::SSLeay to dependencies to fix the following error:
+      "501 Protocol scheme 'https' is not supported (Crypt::SSLeay or
+      IO::Socket::SSL not installed)"
+    - Added Path::Class to dependencies
+
+0.04 2009-07-15
+    - Fixed failing test t/007_live_test.t "Can't call method "childNodes" on an
+      undefined value at /tmp/net-freshbooks-api/lib/Net/FreshBooks/API/Base.pm
+      line 174"
+
+0.03 2009-07-13
+    - Fixed file names in MANIFEST
+
+0.02 2009-07-10
+    - Added Net::FreshBooks::API::Recurring
+    - Created a new FreshBooks test account because the original account was
+      failing the ping method
+    - Added tests for recurring items
+    - Added a sample script: examples/create_recurring_item.pl
+    - Added some POD tests
+    - All modules now pass Perl::Critic severity 4

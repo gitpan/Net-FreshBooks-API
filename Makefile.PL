@@ -1,37 +1,75 @@
-use ExtUtils::MakeMaker;
+
 use strict;
 use warnings;
 
-WriteMakefile(
-    NAME         => 'Net::FreshBooks::API',
-    VERSION_FROM => 'lib/Net/FreshBooks/API.pm',
-    LICENSE      => 'perl',
 
-    PREREQ_PM => {
-        'Carp'                  => 0,
-        'Class::Accessor::Fast' => 0,
-        'Clone'                 => 0,
-        'Crypt::SSLeay'         => 0,
-        'Data::Dump'            => 0,
-        'Data::Dumper'          => 0,
-        'DateTime'              => 0,
-        'Lingua::EN::Inflect'   => 0,
-        'LWP::UserAgent'        => 0,
-        'Path::Class'           => 0,
-        'URI'                   => 0,
-        'XML::LibXML'           => 0,
-        'XML::Simple'           => 0,
 
-        # Testing
-        'English'               => 0,
-        'File::Slurp'           => 0,
-        'File::Spec'            => 0,
-        'Sub::Override'         => 0,
-        'Test::Exception'       => 0,
-        'Test::More'            => 0,
-        'Test::Pod'             => 0,
-        'Test::Pod::Coverage'   => 0,
-        'Test::WWW::Mechanize'  => 0,
-        'Test::XML'             => 0,
-    },
+use ExtUtils::MakeMaker 6.31;
+
+
+
+my %WriteMakefileArgs = (
+  'ABSTRACT' => 'Easy OO access to the FreshBooks.com API',
+  'AUTHOR' => 'Olaf Alders <olaf@wundercounter.com>',
+  'BUILD_REQUIRES' => {
+    'DateTime' => '0',
+    'English' => '0',
+    'File::Slurp' => '0',
+    'Module::Build' => '0.3601',
+    'Sub::Override' => '0',
+    'Test::Exception' => '0',
+    'Test::More' => '0',
+    'Test::Pod' => '0',
+    'Test::Pod::Coverage' => '0',
+    'Test::WWW::Mechanize' => '0',
+    'Test::XML' => '0'
+  },
+  'CONFIGURE_REQUIRES' => {
+    'ExtUtils::MakeMaker' => '6.31',
+    'Module::Build' => '0.3601'
+  },
+  'DISTNAME' => 'Net-FreshBooks-API',
+  'EXE_FILES' => [],
+  'LICENSE' => 'perl',
+  'NAME' => 'Net::FreshBooks::API',
+  'PREREQ_PM' => {
+    'Carp' => '0',
+    'Clone' => '0',
+    'Data::Dump' => '0',
+    'LWP::UserAgent' => '0',
+    'Lingua::EN::Inflect' => '0',
+    'Moose' => '0',
+    'Net::OAuth::Simple' => '0',
+    'Params::Validate' => '0',
+    'Path::Class' => '0',
+    'URI' => '0',
+    'XML::LibXML' => '0',
+    'XML::Simple' => '0'
+  },
+  'VERSION' => '0.11',
+  'test' => {
+    'TESTS' => 't/*.t'
+  }
 );
+
+
+unless ( eval { ExtUtils::MakeMaker->VERSION(6.56) } ) {
+  my $br = delete $WriteMakefileArgs{BUILD_REQUIRES};
+  my $pp = $WriteMakefileArgs{PREREQ_PM};
+  for my $mod ( keys %$br ) {
+    if ( exists $pp->{$mod} ) {
+      $pp->{$mod} = $br->{$mod} if $br->{$mod} > $pp->{$mod};
+    }
+    else {
+      $pp->{$mod} = $br->{$mod};
+    }
+  }
+}
+
+delete $WriteMakefileArgs{CONFIGURE_REQUIRES}
+  unless eval { ExtUtils::MakeMaker->VERSION(6.52) };
+
+WriteMakefile(%WriteMakefileArgs);
+
+
+

@@ -1,15 +1,22 @@
-package Net::FreshBooks::API::Recurring;
-
 use strict;
 use warnings;
 
-use base 'Net::FreshBooks::API::Invoice';
+package Net::FreshBooks::API::Recurring;
+BEGIN {
+  $Net::FreshBooks::API::Recurring::VERSION = '0.11';
+}
+
+use Moose;
+extends 'Net::FreshBooks::API::Invoice';
 
 use Net::FreshBooks::API::InvoiceLine;
 
-__PACKAGE__->mk_accessors( __PACKAGE__->field_names );
+my $fields = _fields();
+foreach my $method ( keys %{$fields} ) {
+    has $method => (  is => $fields->{$method}->{mutable} ? 'rw' : 'ro' );
+}
 
-sub fields {
+sub _fields {
 
     return {
         recurring_id    => { mutable => 0, },
@@ -46,19 +53,30 @@ sub fields {
 }
 
 
+
+__PACKAGE__->meta->make_immutable();
+
+1;
+__END__
+=pod
+
 =head1 NAME
 
-Net::FreshBooks::API::Recurring - FreshBooks Recurring Items
+Net::FreshBooks::API::Recurring
+
+=head1 VERSION
+
+version 0.11
 
 =head1 SYNOPSIS
 
     use Net::FreshBooks::API;
     use Net::FreshBooks::API::InvoiceLine;
     use DateTime;
-    
+
     # You will not access this module directly, but rather fetch an object via
     # its parent class, Net::FreshBooks::API
-    
+
     # auth_token and account_name come from FreshBooks
     my $fb = Net::FreshBooks::API->new(
         {   auth_token   => $auth_token,
@@ -74,10 +92,10 @@ Net::FreshBooks::API::Recurring - FreshBooks Recurring Items
             email        => 'larry@example.com',
         }
     );
-    
+
     # create a recurring item
     use Net::FreshBooks::API;
-    
+
     my $line = Net::FreshBooks::API::InvoiceLine->new({
         name         => "Widget",
         description  => "Net::FreshBooks::API Widget",
@@ -86,7 +104,7 @@ Net::FreshBooks::API::Recurring - FreshBooks Recurring Items
         tax1_name    => "GST",
         tax1_percent => 5,
     });
-    
+
     # use the client object from the previous example
 
     my $recurring_item = $fb->recurring->create({
@@ -96,26 +114,67 @@ Net::FreshBooks::API::Recurring - FreshBooks Recurring Items
         lines       => [ $line ],
         notes       => 'Created by Net::FreshBooks::API',
     });
-    
+
     $recurring_item->po_number( 999 );
     $recurring_item->update;
-    
+
     See also L<Net::FreshBooks::API::Base> for other available methods, such
     as create, update, get, list and delete.
 
+=head2 recurring->create
+
+    my $recurring = $fb->recurring->create({...});
+
+=head2 recurring->update
+
+Please see client->update for an example of how to use this method.
+
+=head2 recurring->get
+
+    my $item = $recurring->get({ recurring_id => $recurring_id });
+
+=head2 recurring->delete
+
+    my $item = $recurring->get({ recurring_id => $recurring_id });
+    $item->delete;
+
+=head2 recurring->list
+
+Returns a L<Net::FreshBooks::API::Iterator> object.
+
+    my $recurrings = $fb->recurring->list;
+    while ( my $recurring = $recurrings->list ) {
+        print $recurring->recurring_id, "\n";
+    }
+
+=head2 recurring->lines
+
+Returns an ARRAYREF of Net::FreshBooks::API::InvoiceLine objects
+
+    foreach my $line ( @{ $recurring->lines } ) {
+        print $line->amount, "\n";
+    }
+
+=head1 NAME
+
+Net::FreshBooks::API::Recurring - FreshBooks Recurring Items
+
+=head1 VERSION
+
+version 0.11
 
 =head1 AUTHOR
 
     Olaf Alders
     CPAN ID: OALDERS
     olaf@raybec.com
-    
+
 =head1 CREDITS
 
 Thanks to Edmund von der Burg for doing all of the hard work to get this
 module going and for allowing me to act as a co-maintainer.
 
-Thanks to Raybec Communications L<http://www.raybec.com> for funding my 
+Thanks to Raybec Communications L<http://www.raybec.com> for funding my
 work on this module and for releasing it to the world.
 
 =head1 COPYRIGHT
@@ -123,6 +182,16 @@ work on this module and for releasing it to the world.
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.
 
+=head1 AUTHOR
+
+Olaf Alders <olaf@wundercounter.com>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Edmund von der Burg & Olaf Alders.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
 
-1;
