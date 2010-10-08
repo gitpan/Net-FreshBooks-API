@@ -2,9 +2,6 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API::OAuth;
-BEGIN {
-  $Net::FreshBooks::API::OAuth::VERSION = '0.12';
-}
 
 use base qw(Net::OAuth::Simple);
 
@@ -17,13 +14,14 @@ sub new {
     my $class  = shift;
     my %tokens = @_;
 
-    foreach my $key ( 'consumer_secret', 'consumer_key' ) {
+    foreach my $key ( 'consumer_secret', 'consumer_key', 'account_name' ) {
         if ( !exists $tokens{$key} ) {
             croak( "$key required as an argument to new()" );
         }
     }
 
-    my $url = 'https://' . $tokens{consumer_key} . '.freshbooks.com/oauth';
+    my $account_name = delete $tokens{account_name};
+    my $url = 'https://' . $account_name . '.freshbooks.com/oauth';
 
     my %create = (
         tokens           => \%tokens,
@@ -213,7 +211,7 @@ Net::FreshBooks::API::OAuth
 
 =head1 VERSION
 
-version 0.12
+version 0.13
 
 =head2 DESCRIPTION
 
@@ -229,6 +227,7 @@ the new() method.
     my $oauth = Net::FreshBooks::API::OAuth->new(
         consumer_key        => $consumer_key,
         consumer_secret     => $consumer_secret,
+        account_name        => $account_name,
     );
 
     # if you already have your access_token and access_token_secret:
@@ -236,16 +235,18 @@ the new() method.
         consumer_key        => $consumer_key,
         consumer_secret     => $consumer_secret,
         access_tokey        => $access_token,
-        access_token_secret => $access_token_secret
+        access_token_secret => $access_token_secret,
+        account_name        => $account_name,
     );
 
 =head2 new()
 
-consumer_key and consumer_key_secret are the two required params:
+consumer_key, consumer_key_secret and account_name are all required params:
 
     my $oauth = Net::FreshBooks::API::OAuth->new(
         consumer_key        => $consumer_key,
         consumer_secret     => $consumer_secret,
+        account_name        => $account_name,
     );
 
 If you have already gotten your access tokens, you may create a new object
@@ -254,8 +255,9 @@ with them as well:
     my $oauth = Net::FreshBooks::API::OAuth->new(
         consumer_key        => $consumer_key,
         consumer_secret     => $consumer_secret,
-        access_tokey        => $access_token,
-        access_token_secret => $access_token_secret
+        access_token        => $access_token,
+        access_token_secret => $access_token_secret,
+        account_name        => $account_name,
     );
 
 =head2 restricted_request( $url, $content )
@@ -263,13 +265,23 @@ with them as well:
 If you have provided your consumer and access tokens, you should be able to
 make restricted requests.
 
-    my $request = $oauth->resricted_request( $api_url, $xml )
+    my $request = $oauth->restricted_request( $api_url, $xml )
 
 Returns an HTTP::Response object
 
-=head1 AUTHOR
+=head1 AUTHORS
+
+=over 4
+
+=item *
+
+Edmund von der Burg <evdb@ecclestoad.co.uk>
+
+=item *
 
 Olaf Alders <olaf@wundercounter.com>
+
+=back
 
 =head1 COPYRIGHT AND LICENSE
 

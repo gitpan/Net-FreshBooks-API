@@ -3,11 +3,9 @@ Changes
 INSTALL
 LICENSE
 MANIFEST
-MANIFEST.SKIP
 META.yml
 Makefile.PL
 README
-README.txt
 TODO
 dist.ini
 examples/OAuthDemo.pm
@@ -24,7 +22,6 @@ lib/Net/FreshBooks/API/Links.pm
 lib/Net/FreshBooks/API/OAuth.pm
 lib/Net/FreshBooks/API/Payment.pm
 lib/Net/FreshBooks/API/Recurring.pm
-net-freshbooks-api.kpf
 t/001_api.t
 t/002_base-parameters_to_request_xml.t
 t/003-client_create.t
@@ -33,15 +30,12 @@ t/005-invoice_create.t
 t/006_live_connect.t
 t/007_live_test.t
 t/008-recurring.t
-t/009_pod.t
-t/010_pod_coverage.t
 t/012_oauth.t
 t/author-critic.t
 t/config.pl
 t/config_sample.pl
 t/perlcriticrc
 t/release-pod-coverage.t
-t/release-pod-syntax.t
 t/test_data/client.create.req.xml
 t/test_data/client.create.res.xml
 t/test_data/client.get.req.xml

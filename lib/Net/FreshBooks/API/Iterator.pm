@@ -2,9 +2,6 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API::Iterator;
-BEGIN {
-  $Net::FreshBooks::API::Iterator::VERSION = '0.12';
-}
 
 use Moose;
 
@@ -87,7 +84,7 @@ Net::FreshBooks::API::Iterator
 
 =head1 VERSION
 
-version 0.12
+version 0.13
 
 =head2 new
 
@@ -119,9 +116,19 @@ Returns the total number of result pages
 
 The item we are currently on
 
-=head1 AUTHOR
+=head1 AUTHORS
+
+=over 4
+
+=item *
+
+Edmund von der Burg <evdb@ecclestoad.co.uk>
+
+=item *
 
 Olaf Alders <olaf@wundercounter.com>
+
+=back
 
 =head1 COPYRIGHT AND LICENSE
 

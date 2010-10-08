@@ -10,7 +10,7 @@ use ExtUtils::MakeMaker 6.31;
 
 my %WriteMakefileArgs = (
   'ABSTRACT' => 'Easy OO access to the FreshBooks.com API',
-  'AUTHOR' => 'Olaf Alders <olaf@wundercounter.com>',
+  'AUTHOR' => 'Edmund von der Burg <evdb@ecclestoad.co.uk>, Olaf Alders <olaf@wundercounter.com>',
   'BUILD_REQUIRES' => {
     'DateTime' => '0',
     'English' => '0',
@@ -19,8 +19,6 @@ my %WriteMakefileArgs = (
     'Sub::Override' => '0',
     'Test::Exception' => '0',
     'Test::More' => '0',
-    'Test::Pod' => '0',
-    'Test::Pod::Coverage' => '0',
     'Test::WWW::Mechanize' => '0',
     'Test::XML' => '0'
   },
@@ -46,7 +44,7 @@ my %WriteMakefileArgs = (
     'XML::LibXML' => '0',
     'XML::Simple' => '0'
   },
-  'VERSION' => '0.12',
+  'VERSION' => '0.13',
   'test' => {
     'TESTS' => 't/*.t'
   }

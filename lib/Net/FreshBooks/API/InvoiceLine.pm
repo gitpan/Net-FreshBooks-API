@@ -2,9 +2,6 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API::InvoiceLine;
-BEGIN {
-  $Net::FreshBooks::API::InvoiceLine::VERSION = '0.12';
-}
 use Moose;
 extends 'Net::FreshBooks::API::Base';
 
@@ -15,6 +12,7 @@ foreach my $method ( keys %{$fields} ) {
 
 sub _fields {
     return {
+        line_id      => { mutable => 0, },
         amount       => { mutable => 0, },
         name         => { mutable => 1, },
         description  => { mutable => 1, },
@@ -24,6 +22,7 @@ sub _fields {
         tax2_name    => { mutable => 1, },
         tax1_percent => { mutable => 1, },
         tax2_percent => { mutable => 1, },
+        type         => { mutable => 1, },
     };
 }
 
@@ -42,11 +41,21 @@ Net::FreshBooks::API::InvoiceLine
 
 =head1 VERSION
 
-version 0.12
+version 0.13
 
-=head1 AUTHOR
+=head1 AUTHORS
+
+=over 4
+
+=item *
+
+Edmund von der Burg <evdb@ecclestoad.co.uk>
+
+=item *
 
 Olaf Alders <olaf@wundercounter.com>
+
+=back
 
 =head1 COPYRIGHT AND LICENSE
 

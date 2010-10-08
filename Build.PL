@@ -14,8 +14,6 @@ my %module_build_args = (
     'Sub::Override' => '0',
     'Test::Exception' => '0',
     'Test::More' => '0',
-    'Test::Pod' => '0',
-    'Test::Pod::Coverage' => '0',
     'Test::WWW::Mechanize' => '0',
     'Test::XML' => '0'
   },
@@ -25,10 +23,11 @@ my %module_build_args = (
   },
   'dist_abstract' => 'Easy OO access to the FreshBooks.com API',
   'dist_author' => [
+    'Edmund von der Burg <evdb@ecclestoad.co.uk>',
     'Olaf Alders <olaf@wundercounter.com>'
   ],
   'dist_name' => 'Net-FreshBooks-API',
-  'dist_version' => '0.12',
+  'dist_version' => '0.13',
   'license' => 'perl',
   'module_name' => 'Net::FreshBooks::API',
   'recommends' => {},

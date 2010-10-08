@@ -2,9 +2,6 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API::Client;
-BEGIN {
-  $Net::FreshBooks::API::Client::VERSION = '0.12';
-}
 
 use Moose;
 extends 'Net::FreshBooks::API::Base';
@@ -32,7 +29,11 @@ sub _fields {
         home_phone => { mutable => 1, },
         mobile     => { mutable => 1, },
         fax        => { mutable => 1, },
+        language   => { mutable => 1, },
+        currency_code => { mutable => 1, },
 
+        # credit is now made up of currency specific items, so this
+        # probably won't work
         credit => { mutable => 0, },
         notes  => { mutable => 1, },
 
@@ -55,6 +56,12 @@ sub _fields {
             made_of      => 'Net::FreshBooks::API::Links',
             presented_as => 'single',
         },
+        
+        vat_name   => { mutable => 1, },
+        vat_number => { mutable => 1, },
+        
+        # folder is listed in the API docs, but throws an error anyway
+        #folder     => { mutable => 1, },
     };
 }
 
@@ -72,7 +79,7 @@ Net::FreshBooks::API::Client
 
 =head1 VERSION
 
-version 0.12
+version 0.13
 
 =head1 SYNOPSIS
 
@@ -120,6 +127,13 @@ the update() method, which is described below.
     my $client = $fb->client->get({ client_id => $client_id });
     $client->delete;
 
+=head2 links
+
+Returns a L<Net::FreshBooks::API::Links> object, which returns FreshBooks
+URLs.
+
+    print "Client view: " . $fb->client->links->client_view;
+
 =head2 list
 
 Returns n L<Net::FreshBooks::API::Iterator> object. Currently,
@@ -144,9 +158,19 @@ To override the default pagination:
 This class gives you object to FreshBooks client information.
 L<Net::FreshBooks::API> will construct this object for you.
 
-=head1 AUTHOR
+=head1 AUTHORS
+
+=over 4
+
+=item *
+
+Edmund von der Burg <evdb@ecclestoad.co.uk>
+
+=item *
 
 Olaf Alders <olaf@wundercounter.com>
+
+=back
 
 =head1 COPYRIGHT AND LICENSE
 

@@ -2,9 +2,6 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API;
-BEGIN {
-  $Net::FreshBooks::API::VERSION = '0.12';
-}
 use Moose;
 
 use Carp qw( carp croak );
@@ -33,14 +30,14 @@ has 'consumer_key'        => ( is => 'rw' );
 has 'consumer_secret'     => ( is => 'rw' );
 
 sub _log {    ## no critic
-    
+
     my $self = shift;
     return if !$self->verbose;
-    
+
     my ( $level, $message ) = @_;
     $message .= "\n" if $message !~ m{\n/z}x;
     carp "$level: $message";
-    
+
     return;
 
 }
@@ -153,8 +150,9 @@ sub _build_oauth {
     my $self = shift;
 
     my %tokens = (
-        consumer_key    => $self->consumer_key,
-        consumer_secret => $self->consumer_secret,
+        consumer_key    => $self->consumer_key || undef,
+        consumer_secret => $self->consumer_secret || undef,
+        account_name    => $self->account_name || undef,
     );
 
     if ( $self->access_token && $self->access_token_secret ) {
@@ -175,7 +173,6 @@ __PACKAGE__->meta->make_immutable();
 # ABSTRACT: Easy OO access to the FreshBooks.com API
 
 
-
 __END__
 =pod
 
@@ -185,7 +182,7 @@ Net::FreshBooks::API - Easy OO access to the FreshBooks.com API
 
 =head1 VERSION
 
-version 0.12
+version 0.13
 
 =head1 SYNOPSIS
 
@@ -193,10 +190,11 @@ version 0.12
 
     # Authenticate with OAuth (recommended)
     my $fb = Net::FreshBooks::API->new(
-        {   consumer_key        => $consumer_key,       # same as account_name
+        {   consumer_key        => $consumer_key,       # your account_name
             consumer_secret     => $consumer_secret,
             access_token        => $access_token,
             access_token_secret => $access_token_secret,
+            account_name        => $account_name,       # user's account name
         }
     );
 
@@ -207,7 +205,7 @@ version 0.12
             account_name => $account_name,
         }
     );
-    
+
     # create a new client
     my $client = $fb->client->create(
         {   first_name   => 'Larry',
@@ -216,21 +214,21 @@ version 0.12
             email        => 'larry@example.com',
         }
     );
-    
+
     # we can now make changes to the client and save them
     $client->organization( 'Perl Foundation' );
     $client->update;
-    
+
     # or more quickly
     $client->update( { organization => 'Perl Foundation', } );
-    
+
     # create an invoice for this client
     my $invoice = $fb->invoice(
         {   client_id => $client->client_id,
             number    => '00001',
         }
     );
-    
+
     # add a line to the invoice
     $invoice->add_line(
         {   name      => 'Hawaiian shirt consulting',
@@ -238,29 +236,29 @@ version 0.12
             quantity  => 4,
         }
     );
-    
+
     # save the invoice and then send it
     $invoice->create;
     $invoice->send_by_email;
-    
+
     ############################################
     # create a recurring item
     ############################################
-    
+
     use Net::FreshBooks::API;
     use Net::FreshBooks::API::InvoiceLine;
     use DateTime;
-    
+
     # auth_token and account_name come from FreshBooks
     my $fb = Net::FreshBooks::API->new(
         {   auth_token   => $auth_token,
             account_name => $account_name,
         }
     );
-    
+
     # find the first client returned
     my $client = $fb->client->list->next;
-    
+
     # create a line item
     my $line = Net::FreshBooks::API::InvoiceLine->new(
         {   name         => "Widget",
@@ -271,7 +269,7 @@ version 0.12
             tax1_percent => 5,
         }
     );
-    
+
     # create the recurring item
     my $recurring_item = $fb->recurring->create(
         {   client_id => $client->client_id,
@@ -281,7 +279,7 @@ version 0.12
             notes     => 'Created by Net::FreshBooks::API',
         }
     );
-    
+
     $recurring_item->po_number( 999 );
     $recurring_item->update;
 
@@ -312,13 +310,22 @@ access_token_secret, you can so so by running the oauth.pl script in the
 
 =head2 new
 
-Create a new API object.
+Create a new API object using OAuth:
 
     my $fb = Net::FreshBooks::API->new(
         {   consumer_key        => $consumer_key,       # same as account_name
             consumer_secret     => $consumer_secret,
             access_token        => $access_token,
             access_token_secret => $access_token_secret,
+        }
+    );
+
+Create a new API object the old (discouraged) way:
+
+    # auth_token and account_name come from FreshBooks
+    my $fb = Net::FreshBooks::API->new(
+        {   auth_token   => $auth_token,
+            account_name => $account_name,
         }
     );
 
@@ -379,27 +386,54 @@ the test script to see what is left behind.
 
 =head1 OAUTH METHODS
 
-=head2 consumer_key( $account_name )
+=head2 OAUTH ACCESSOR/MUTATOR METHODS
 
-Getter/setter method. Can also be passed to new(). Required when constructing
-a new L<Net::FreshBooks::API::OAuth> object.
+The following OAuth methods are getter/setter methods, which can optionally also
+be passed to new().  Required or optional is used in the context of OAuth
+connections.  If you are not connecting via OAuth then you can safely ignore
+these options.
 
-=head2 consumer_secret( $secret )
+=head3 account_name( $account_name )
 
-Getter/setter method. Can also be passed to new(). Required when constructing
-a new L<Net::FreshBooks::API::OAuth> object.  The consumer_secret is
-provided to you by FreshBooks.  You'll need to log in to your account to
-access it.
+Required. Account name is the account name of the user who wishes to connect
+to your app.
 
-=head2 access_token( $access_token )
+For example, if "acmeinc" is attempting to connect to your "widgets" app:
 
-Getter/setter method.  Can also be passed to new().  Optional for construction
-of a new L<Net::FreshBooks::API::OAuth> object.
+    # acme usually logs in via https://acmeinc.freshbooks.com
+    $fb->account_name( 'acmeinc' );
 
-=head2 access_token_secret( $access_token_secret )
+=head3 consumer_key( $consumer_key )
 
-Getter/setter method.  Can also be passed to new().  Optional for construction
-of a new L<Net::FreshBooks::API::OAuth> object.
+Required. The consumer key will be provided to you by FreshBooks, but it's
+generally just the name of your account.
+
+    # account name is "mycompany"
+    # https://mycompany.freshbooks.com
+
+    $fb->consumer_key( 'mycompany' );
+
+(In the case where you are logging in to your own app, consumer_key and
+account_name will have the same value.)
+
+=head3 consumer_secret( $secret )
+
+Required. The consumer_secret is provided to you by FreshBooks. You'll need to
+log in to your account to access it.
+
+=head3 access_token( $access_token )
+
+Optional.  If you do not have an access_token, you'll need to acquire one
+with your code and then set this parameter before you request restricted
+URLs.
+
+=head3 access_token_secret( $access_token_secret )
+
+Optional. If you do not have an access_token_secret, you'll need to acquire
+one with your code and then set this parameter before you request restricted
+URLs.
+
+=head2 OAUTH ACCESSOR METHODS
 
 =head2 oauth
 
@@ -424,7 +458,7 @@ Edmund von der Burg C<<evdb@ecclestoad.co.uk>> (Original Author)
 
 Developed for HinuHinu L<http://www.hinuhinu.com/>.
 
-Recurring item support by:
+Recurring item and OAuth support by:
 
 Olaf Alders olaf@raybec.com
 
@@ -436,9 +470,19 @@ L<WWW::FreshBooks::API> - an alternative interface to FreshBooks.
 
 L<http://developers.freshbooks.com/overview/> the FreshBooks API documentation.
 
-=head1 AUTHOR
+=head1 AUTHORS
+
+=over 4
+
+=item *
+
+Edmund von der Burg <evdb@ecclestoad.co.uk>
+
+=item *
 
 Olaf Alders <olaf@wundercounter.com>
+
+=back
 
 =head1 COPYRIGHT AND LICENSE
 

@@ -2,9 +2,6 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API::Base;
-BEGIN {
-  $Net::FreshBooks::API::Base::VERSION = '0.12';
-}
 
 use Moose;
 use Carp qw( carp croak );
@@ -285,8 +282,13 @@ sub construct_element {
     my $hashref = shift;
 
     foreach my $key ( sort keys %$hashref ) {
-
         my $val = $hashref->{$key};
+        
+        # avoid "Unknown currency" API error
+        next if $key eq 'currency_code' && !$val;
+        
+        # line_id is returned, but not sent
+        next if $key eq 'line_id';
 
         # keys starting with an underscore are attributes
         if ( my ( $attr_key ) = $key =~ m{ \A _ (.*) \z }x ) {
@@ -420,7 +422,7 @@ Net::FreshBooks::API::Base
 
 =head1 VERSION
 
-version 0.12
+version 0.13
 
 =head2 new_from_node
 
@@ -542,9 +544,19 @@ Sends the xml to the FreshBooks API and returns the XML content returned. This
 is the lowest part and is encapsulated here so that it can be easily overridden
 for testing.
 
-=head1 AUTHOR
+=head1 AUTHORS
+
+=over 4
+
+=item *
+
+Edmund von der Burg <evdb@ecclestoad.co.uk>
+
+=item *
 
 Olaf Alders <olaf@wundercounter.com>
+
+=back
 
 =head1 COPYRIGHT AND LICENSE
 

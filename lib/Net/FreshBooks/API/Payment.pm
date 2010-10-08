@@ -2,9 +2,6 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API::Payment;
-BEGIN {
-  $Net::FreshBooks::API::Payment::VERSION = '0.12';
-}
 
 use Moose;
 extends 'Net::FreshBooks::API::Base';
@@ -22,12 +19,15 @@ sub _fields {
         client_id  => { mutable => 1, },
         invoice_id => { mutable => 1, },
 
-        date   => { mutable => 1, },
-        amount => { mutable => 1, },
-        type   => { mutable => 1, },
-        notes  => { mutable => 1, },
+        date          => { mutable => 1, },
+        amount        => { mutable => 1, },
+        currency_code => { mutable => 1, },
+        type          => { mutable => 1, },
+        notes         => { mutable => 1, },
+        updated       => { mutable => 0, },
     };
 }
+
 
 __PACKAGE__->meta->make_immutable();
 
@@ -43,33 +43,33 @@ Net::FreshBooks::API::Payment
 
 =head1 VERSION
 
-version 0.12
+version 0.13
 
 =head1 SYNOPSIS
 
     my $fb = Net::FreshBooks::API->new({ ... });
     my $payment = $fb->payment;
 
-=head2 payment->create
+=head2 create
 
 Create a new payment in the FreshBooks system
 
     my $payment = $fb->payment->create({...});
 
-=head2 payment->update
+=head2 update
 
 Please see client->update for an example of how to use this method.
 
-=head2 payment->get
+=head2 get
 
     my $payment = $fb->payment->get({ payment_id => $payment_id });
 
-=head2 payment->delete
+=head2 delete
 
     my $payment = $fb->payment->get({ payment_id => $payment_id });
     $payment->delete;
 
-=head2 payment->list
+=head2 list
 
 Returns a L<Net::FreshBooks::API::Iterator> object.
 
@@ -83,9 +83,19 @@ Returns a L<Net::FreshBooks::API::Iterator> object.
 This class gives you object to FreshBooks payment information.
 L<Net::FreshBooks::API> will construct this object for you.
 
-=head1 AUTHOR
+=head1 AUTHORS
+
+=over 4
+
+=item *
+
+Edmund von der Burg <evdb@ecclestoad.co.uk>
+
+=item *
 
 Olaf Alders <olaf@wundercounter.com>
+
+=back
 
 =head1 COPYRIGHT AND LICENSE
 
