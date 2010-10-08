@@ -2,6 +2,9 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API::Base;
+BEGIN {
+  $Net::FreshBooks::API::Base::VERSION = '0.14';
+}
 
 use Moose;
 use Carp qw( carp croak );
@@ -422,7 +425,7 @@ Net::FreshBooks::API::Base
 
 =head1 VERSION
 
-version 0.13
+version 0.14
 
 =head2 new_from_node
 

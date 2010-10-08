@@ -2,6 +2,9 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API::Links;
+BEGIN {
+  $Net::FreshBooks::API::Links::VERSION = '0.14';
+}
 
 use Moose;
 extends 'Net::FreshBooks::API::Base';
@@ -34,7 +37,7 @@ Net::FreshBooks::API::Links
 
 =head1 VERSION
 
-version 0.13
+version 0.14
 
 =head1 SYNOPSIS
 

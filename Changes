@@ -1,5 +1,8 @@
 Revision history for Perl module Net::FreshBooks::API
 
+0.14 2010-10-07
+    - Fixed missing package versions which broke distro 0.13
+
 0.13 2010-10-07
     - Fixed a bug where OAuth URL would not always use correct account_name
       when being constructed

@@ -2,6 +2,9 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API::Client;
+BEGIN {
+  $Net::FreshBooks::API::Client::VERSION = '0.14';
+}
 
 use Moose;
 extends 'Net::FreshBooks::API::Base';
@@ -79,7 +82,7 @@ Net::FreshBooks::API::Client
 
 =head1 VERSION
 
-version 0.13
+version 0.14
 
 =head1 SYNOPSIS
 

@@ -2,6 +2,9 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API::Recurring;
+BEGIN {
+  $Net::FreshBooks::API::Recurring::VERSION = '0.14';
+}
 
 use Moose;
 extends 'Net::FreshBooks::API::Invoice';
@@ -71,7 +74,7 @@ Net::FreshBooks::API::Recurring
 
 =head1 VERSION
 
-version 0.13
+version 0.14
 
 =head1 SYNOPSIS
 

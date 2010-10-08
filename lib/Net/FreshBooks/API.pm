@@ -2,6 +2,9 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API;
+BEGIN {
+  $Net::FreshBooks::API::VERSION = '0.14';
+}
 use Moose;
 
 use Carp qw( carp croak );
@@ -182,7 +185,7 @@ Net::FreshBooks::API - Easy OO access to the FreshBooks.com API
 
 =head1 VERSION
 
-version 0.13
+version 0.14
 
 =head1 SYNOPSIS
 

@@ -2,6 +2,9 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API::Iterator;
+BEGIN {
+  $Net::FreshBooks::API::Iterator::VERSION = '0.14';
+}
 
 use Moose;
 
@@ -84,7 +87,7 @@ Net::FreshBooks::API::Iterator
 
 =head1 VERSION
 
-version 0.13
+version 0.14
 
 =head2 new
 
