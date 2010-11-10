@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API;
 BEGIN {
-  $Net::FreshBooks::API::VERSION = '0.14';
+  $Net::FreshBooks::API::VERSION = '0.15';
 }
 use Moose;
 
@@ -11,6 +11,7 @@ use Carp qw( carp croak );
 use Data::Dump qw( dump );
 #use Devel::SimpleTrace;
 use Net::FreshBooks::API::Client;
+use Net::FreshBooks::API::Estimate;
 use Net::FreshBooks::API::Invoice;
 use Net::FreshBooks::API::OAuth;
 use Net::FreshBooks::API::Payment;
@@ -69,27 +70,33 @@ sub service_url {
 }
 
 sub client {
-    my $self = shift;
-    my $args = shift || {};
-    return Net::FreshBooks::API::Client->new( { _fb => $self, %$args } );
+    return shift->_create_object( 'Client', @_ );
+}
+
+sub estimate {
+    return shift->_create_object( 'Estimate', @_ );
 }
 
 sub invoice {
-    my $self = shift;
-    my $args = shift || {};
-    return Net::FreshBooks::API::Invoice->new( { _fb => $self, %$args } );
+    return shift->_create_object( 'Invoice', @_ );
 }
 
 sub payment {
-    my $self = shift;
-    my $args = shift || {};
-    return Net::FreshBooks::API::Payment->new( { _fb => $self, %$args } );
+    return shift->_create_object( 'Payment', @_ );
 }
 
 sub recurring {
+    return shift->_create_object( 'Recurring', @_ );
+}
+
+sub _create_object {
+    
     my $self = shift;
+    my $class = 'Net::FreshBooks::API::' . shift;
+    
     my $args = shift || {};
-    return Net::FreshBooks::API::Recurring->new( { _fb => $self, %$args } );
+    return $class->new( { _fb => $self, %$args } );    
+    
 }
 
 sub _build_ua {
@@ -185,7 +192,7 @@ Net::FreshBooks::API - Easy OO access to the FreshBooks.com API
 
 =head1 VERSION
 
-version 0.14
+version 0.15
 
 =head1 SYNOPSIS
 
@@ -335,6 +342,10 @@ Create a new API object the old (discouraged) way:
 =head2 client
 
 Returns a L<Net::FreshBooks::API::Client> object.
+
+=head2 estimate
+
+Creates and returns a new L<Net::FreshBooks::API::Estimate> object.
 
 =head2 invoice
 

@@ -27,7 +27,7 @@ my %module_build_args = (
     'Olaf Alders <olaf@wundercounter.com>'
   ],
   'dist_name' => 'Net-FreshBooks-API',
-  'dist_version' => '0.14',
+  'dist_version' => '0.15',
   'license' => 'perl',
   'module_name' => 'Net::FreshBooks::API',
   'recommends' => {},
@@ -39,6 +39,7 @@ my %module_build_args = (
     'LWP::UserAgent' => '0',
     'Lingua::EN::Inflect' => '0',
     'Moose' => '0',
+    'Moose::Role' => '0',
     'Net::OAuth::Simple' => '0',
     'Params::Validate' => '0',
     'Path::Class' => '0',

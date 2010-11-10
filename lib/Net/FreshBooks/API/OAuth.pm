@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::OAuth;
 BEGIN {
-  $Net::FreshBooks::API::OAuth::VERSION = '0.14';
+  $Net::FreshBooks::API::OAuth::VERSION = '0.15';
 }
 
 use base qw(Net::OAuth::Simple);
@@ -18,12 +18,13 @@ sub new {
     my %tokens = @_;
 
     foreach my $key ( 'consumer_secret', 'consumer_key', 'account_name' ) {
-        if ( !exists $tokens{$key} ) {
+        if ( !exists $tokens{$key} || !$tokens{$key} ) {
             croak( "$key required as an argument to new()" );
         }
     }
 
     my $account_name = delete $tokens{account_name};
+    
     my $url = 'https://' . $account_name . '.freshbooks.com/oauth';
 
     my %create = (
@@ -214,7 +215,7 @@ Net::FreshBooks::API::OAuth
 
 =head1 VERSION
 
-version 0.14
+version 0.15
 
 =head2 DESCRIPTION
 

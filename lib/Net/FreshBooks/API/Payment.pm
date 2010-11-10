@@ -3,34 +3,30 @@ use warnings;
 
 package Net::FreshBooks::API::Payment;
 BEGIN {
-  $Net::FreshBooks::API::Payment::VERSION = '0.14';
+  $Net::FreshBooks::API::Payment::VERSION = '0.15';
 }
 
 use Moose;
 extends 'Net::FreshBooks::API::Base';
+with 'Net::FreshBooks::API::Role::CRUD';
 
 use Net::FreshBooks::API::Links;
 
-my $fields = _fields();
-foreach my $method ( keys %{$fields} ) {
-    has $method => (  is => $fields->{$method}->{mutable} ? 'rw' : 'ro' );
-}
+has $_ => ( is => _fields()->{$_}->{is} ) for sort keys %{ _fields() };
 
 sub _fields {
     return {
-        payment_id => { mutable => 0, },
-        client_id  => { mutable => 1, },
-        invoice_id => { mutable => 1, },
-
-        date          => { mutable => 1, },
-        amount        => { mutable => 1, },
-        currency_code => { mutable => 1, },
-        type          => { mutable => 1, },
-        notes         => { mutable => 1, },
-        updated       => { mutable => 0, },
+        payment_id    => { is => 'ro' },
+        client_id     => { is => 'rw' },
+        invoice_id    => { is => 'rw' },
+        date          => { is => 'rw' },
+        amount        => { is => 'rw' },
+        currency_code => { is => 'rw' },
+        type          => { is => 'rw' },
+        notes         => { is => 'rw' },
+        updated       => { is => 'ro' },
     };
 }
-
 
 __PACKAGE__->meta->make_immutable();
 
@@ -46,7 +42,7 @@ Net::FreshBooks::API::Payment
 
 =head1 VERSION
 
-version 0.14
+version 0.15
 
 =head1 SYNOPSIS
 
@@ -59,18 +55,22 @@ Create a new payment in the FreshBooks system
 
     my $payment = $fb->payment->create({...});
 
-=head2 update
+=head2 delete
 
-Please see client->update for an example of how to use this method.
+    my $payment = $fb->payment->get({ payment_id => $payment_id });
+    $payment->delete;
 
 =head2 get
 
     my $payment = $fb->payment->get({ payment_id => $payment_id });
 
-=head2 delete
+=head2 update
 
-    my $payment = $fb->payment->get({ payment_id => $payment_id });
-    $payment->delete;
+    $payment->notes('Payment Refunded.');
+    $payment->update;
+
+    # or more directly
+    $client->update( { notes => 'Payment refunded' } );
 
 =head2 list
 

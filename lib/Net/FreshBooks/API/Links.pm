@@ -3,23 +3,20 @@ use warnings;
 
 package Net::FreshBooks::API::Links;
 BEGIN {
-  $Net::FreshBooks::API::Links::VERSION = '0.14';
+  $Net::FreshBooks::API::Links::VERSION = '0.15';
 }
 
 use Moose;
 extends 'Net::FreshBooks::API::Base';
 
-my $fields = _fields();
-foreach my $method ( keys %{$fields} ) {
-    has $method => (  is => $fields->{$method}->{mutable} ? 'rw' : 'ro' );
-}
+has $_ => ( is => _fields()->{$_}->{is} ) for sort keys %{ _fields() };
 
 sub _fields {
     return {
-        client_view => { mutable => 0, },
-        view        => { mutable => 0, },
-        edit        => { mutable => 0, },
-        statement   => { mutable => 0, },
+        client_view => { is => 'ro' },
+        view        => { is => 'ro' },
+        edit        => { is => 'ro' },
+        statement   => { is => 'ro' },
     };
 }
 
@@ -37,7 +34,7 @@ Net::FreshBooks::API::Links
 
 =head1 VERSION
 
-version 0.14
+version 0.15
 
 =head1 SYNOPSIS
 
@@ -52,7 +49,7 @@ version 0.14
 
 =head2 client_view
 
-    Provided for invoice and client links.
+    Provided for invoice, client and estimate links.
 
 =head2 view
 

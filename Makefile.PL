@@ -37,6 +37,7 @@ my %WriteMakefileArgs = (
     'LWP::UserAgent' => '0',
     'Lingua::EN::Inflect' => '0',
     'Moose' => '0',
+    'Moose::Role' => '0',
     'Net::OAuth::Simple' => '0',
     'Params::Validate' => '0',
     'Path::Class' => '0',
@@ -44,7 +45,7 @@ my %WriteMakefileArgs = (
     'XML::LibXML' => '0',
     'XML::Simple' => '0'
   },
-  'VERSION' => '0.14',
+  'VERSION' => '0.15',
   'test' => {
     'TESTS' => 't/*.t'
   }
