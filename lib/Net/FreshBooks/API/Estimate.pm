@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Estimate;
 BEGIN {
-  $Net::FreshBooks::API::Estimate::VERSION = '0.15';
+  $Net::FreshBooks::API::Estimate::VERSION = '0.16';
 }
 
 use Moose;
@@ -41,7 +41,7 @@ sub _fields {
 
         # custom fields
         estimate_id => { is => 'ro' },
-        folder      => { is => 'rw' },
+        folder      => { is => 'ro' },
         lines       => {
             is           => 'rw',
             made_of      => 'Net::FreshBooks::API::InvoiceLine',
@@ -71,12 +71,40 @@ Net::FreshBooks::API::Estimate
 
 =head1 VERSION
 
-version 0.15
+version 0.16
 
 =head1 SYNOPSIS
 
-    my $fb = Net::FreshBooks::API->new({ ... });
-    my $estimate = $fb->estimate;
+Estimate objects are created via L<Net::FreshBooks::API>
+
+    my $fb = Net::FreshBooks::API->new( {...} );
+    my $estimate = $fb->estimate->create({ client_id => $id });
+
+    # add as many items as you need
+    $estimate->add_line(
+        {   name      => "Estimate Test line 1",
+            unit_cost => 1,
+            quantity  => 1,
+        }
+        ),
+        "Add a line to the estimate";
+
+    ok $estimate->add_line(
+        {   name      => "Estimate Test line 2",
+            unit_cost => 2,
+            quantity  => 2,
+        }
+        ),
+        "Add second line to the estimate";
+
+    print $estimate->status;    # draft
+
+    # in order to make the URL viewable, you'll need to mark it as "sent"
+    $estimate->status( 'sent' );
+    $estimate->update;
+
+    # viewable URL is:
+    print $estimate->links->client_view;
 
 =head2 create
 
@@ -103,7 +131,7 @@ Create an estimate in the FreshBooks system.
 
 =head2 add_line
 
-Create a new L<Net::FreshBooks::API::estimateLine> object and add it to the
+Create a new L<Net::FreshBooks::API::InvoiceLine> object and add it to the
 end of the list of lines
 
     my $bool = $estimate->add_line(

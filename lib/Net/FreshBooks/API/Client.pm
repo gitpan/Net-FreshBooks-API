@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Client;
 BEGIN {
-  $Net::FreshBooks::API::Client::VERSION = '0.15';
+  $Net::FreshBooks::API::Client::VERSION = '0.16';
 }
 
 use Moose;
@@ -51,7 +51,7 @@ sub _fields {
         username   => { is => 'rw' },
         work_phone => { is => 'rw' },
 
-        #folder     => { is => 'rw' },
+        folder     => { is => 'ro' },
 
     };
 }
@@ -70,7 +70,7 @@ Net::FreshBooks::API::Client
 
 =head1 VERSION
 
-version 0.15
+version 0.16
 
 =head1 SYNOPSIS
 

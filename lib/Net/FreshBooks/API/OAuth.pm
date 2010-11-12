@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::OAuth;
 BEGIN {
-  $Net::FreshBooks::API::OAuth::VERSION = '0.15';
+  $Net::FreshBooks::API::OAuth::VERSION = '0.16';
 }
 
 use base qw(Net::OAuth::Simple);
@@ -215,7 +215,7 @@ Net::FreshBooks::API::OAuth
 
 =head1 VERSION
 
-version 0.15
+version 0.16
 
 =head2 DESCRIPTION
 

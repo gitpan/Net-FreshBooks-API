@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Invoice;
 BEGIN {
-  $Net::FreshBooks::API::Invoice::VERSION = '0.15';
+  $Net::FreshBooks::API::Invoice::VERSION = '0.16';
 }
 
 use Moose;
@@ -41,7 +41,7 @@ sub _fields {
 
         # custom fields
         amount_outstanding => { is => 'ro' },
-        folder             => { is => 'rw' },
+        folder             => { is => 'ro' },
         invoice_id         => { is => 'ro' },
         lines              => {
             is           => 'rw',
@@ -75,7 +75,7 @@ Net::FreshBooks::API::Invoice
 
 =head1 VERSION
 
-version 0.15
+version 0.16
 
 =head1 SYNOPSIS
 
