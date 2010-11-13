@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Base;
 BEGIN {
-  $Net::FreshBooks::API::Base::VERSION = '0.16';
+  $Net::FreshBooks::API::Base::VERSION = '0.17';
 }
 
 use Moose;
@@ -337,7 +337,7 @@ Net::FreshBooks::API::Base
 
 =head1 VERSION
 
-version 0.16
+version 0.17
 
 =head2 new_from_node
 

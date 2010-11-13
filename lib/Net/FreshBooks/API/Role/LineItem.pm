@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Role::LineItem;
 BEGIN {
-  $Net::FreshBooks::API::Role::LineItem::VERSION = '0.16';
+  $Net::FreshBooks::API::Role::LineItem::VERSION = '0.17';
 }
 
 use Moose::Role;
@@ -31,7 +31,7 @@ Net::FreshBooks::API::Role::LineItem
 
 =head1 VERSION
 
-version 0.16
+version 0.17
 
 =head1 AUTHORS
 

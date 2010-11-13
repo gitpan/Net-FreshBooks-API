@@ -27,7 +27,7 @@ my %module_build_args = (
     'Olaf Alders <olaf@wundercounter.com>'
   ],
   'dist_name' => 'Net-FreshBooks-API',
-  'dist_version' => '0.16',
+  'dist_version' => '0.17',
   'license' => 'perl',
   'module_name' => 'Net::FreshBooks::API',
   'recommends' => {},
