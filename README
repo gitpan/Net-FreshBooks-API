@@ -2,7 +2,7 @@ NAME
     Net::FreshBooks::API - Easy OO access to the FreshBooks.com API
 
 VERSION
-    version 0.17
+    version 0.18
 
 SYNOPSIS
         use Net::FreshBooks::API;
@@ -237,6 +237,9 @@ OAUTH METHODS
     Optional. If you do not have an access_token_secret, you'll need to
     acquire one with your code and then set this parameter before you
     request restricted URLs.
+
+   account_name_ok
+    Returns true if $fb->account_name appears to be valid.
 
   OAUTH ACCESSOR METHODS
   oauth

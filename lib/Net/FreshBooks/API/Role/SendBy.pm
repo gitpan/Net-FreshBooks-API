@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Role::SendBy;
 BEGIN {
-  $Net::FreshBooks::API::Role::SendBy::VERSION = '0.17';
+  $Net::FreshBooks::API::Role::SendBy::VERSION = '0.18';
 }
 
 use Moose::Role;
@@ -49,7 +49,7 @@ Net::FreshBooks::API::Role::SendBy
 
 =head1 VERSION
 
-version 0.17
+version 0.18
 
 =head1 AUTHORS
 

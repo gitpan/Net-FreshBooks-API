@@ -42,10 +42,12 @@ my %WriteMakefileArgs = (
     'Params::Validate' => '0',
     'Path::Class' => '0',
     'URI' => '0',
+    'WWW::Mechanize' => '0',
     'XML::LibXML' => '0',
-    'XML::Simple' => '0'
+    'XML::Simple' => '0',
+    'namespace::autoclean' => '0'
   },
-  'VERSION' => '0.17',
+  'VERSION' => '0.18',
   'test' => {
     'TESTS' => 't/*.t'
   }
