@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Role::SendBy;
 BEGIN {
-  $Net::FreshBooks::API::Role::SendBy::VERSION = '0.18';
+  $Net::FreshBooks::API::Role::SendBy::VERSION = '0.19';
 }
 
 use Moose::Role;
@@ -40,6 +40,7 @@ sub _send_using {
 
 1;
 
+
 __END__
 =pod
 
@@ -49,7 +50,17 @@ Net::FreshBooks::API::Role::SendBy
 
 =head1 VERSION
 
-version 0.18
+version 0.19
+
+=head1 SYNOPSIS
+
+Roles for sending by email and snail mail. Used for both Estimates and
+Invoices. Please refer to these modules for specific examples of how to use
+these methods.
+
+=head2 send_by_email
+
+=head2 send_by_snail_mail
 
 =head1 AUTHORS
 
@@ -67,7 +78,7 @@ Olaf Alders <olaf@wundercounter.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2010 by Edmund von der Burg & Olaf Alders.
+This software is copyright (c) 2011 by Edmund von der Burg & Olaf Alders.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

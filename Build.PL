@@ -27,12 +27,13 @@ my %module_build_args = (
     'Olaf Alders <olaf@wundercounter.com>'
   ],
   'dist_name' => 'Net-FreshBooks-API',
-  'dist_version' => '0.18',
+  'dist_version' => '0.19',
   'license' => 'perl',
   'module_name' => 'Net::FreshBooks::API',
   'recommends' => {},
   'recursive_test_files' => 1,
   'requires' => {
+    'B::Hooks::EndOfScope' => '0.09',
     'Carp' => '0',
     'Clone' => '0',
     'Data::Dump' => '0',
@@ -47,7 +48,8 @@ my %module_build_args = (
     'WWW::Mechanize' => '0',
     'XML::LibXML' => '0',
     'XML::Simple' => '0',
-    'namespace::autoclean' => '0'
+    'namespace::autoclean' => '0.11',
+    'parent' => '0.224'
   },
   'script_files' => []
 );

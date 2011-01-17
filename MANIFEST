@@ -17,6 +17,7 @@ lib/Net/FreshBooks/API/Base.pm
 lib/Net/FreshBooks/API/Client.pm
 lib/Net/FreshBooks/API/Error.pm
 lib/Net/FreshBooks/API/Estimate.pm
+lib/Net/FreshBooks/API/EstimateLine.pm
 lib/Net/FreshBooks/API/Invoice.pm
 lib/Net/FreshBooks/API/InvoiceLine.pm
 lib/Net/FreshBooks/API/Iterator.pm
@@ -27,7 +28,7 @@ lib/Net/FreshBooks/API/Recurring.pm
 lib/Net/FreshBooks/API/Role/CRUD.pm
 lib/Net/FreshBooks/API/Role/LineItem.pm
 lib/Net/FreshBooks/API/Role/SendBy.pm
-n-f-a-watson.komodoproject
+net-freshbooks-api.komodoproject
 t/001_api.t
 t/002_base-parameters_to_request_xml.t
 t/003-client_create.t

@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Role::CRUD;
 BEGIN {
-  $Net::FreshBooks::API::Role::CRUD::VERSION = '0.18';
+  $Net::FreshBooks::API::Role::CRUD::VERSION = '0.19';
 }
 
 use Moose::Role;
@@ -136,9 +136,8 @@ sub get_all {
 
 }
 
-
-
 1;
+
 
 __END__
 =pod
@@ -149,7 +148,32 @@ Net::FreshBooks::API::Role::CRUD
 
 =head1 VERSION
 
-version 0.18
+version 0.19
+
+=head1 SYNOPSIS
+
+These roles are used for the more repetitive Create, Read, Update and Delete
+functions.  See the various modules which provide these methods for specific
+examples of how they are used.
+
+=head2 create( $args )
+
+=head2 delete
+
+Uses the id field of the current object to perform a delete operation.
+
+=head2 get( $args )
+
+=head2 get_all( $args )
+
+Iterates over all pages of results provided by FreshBooks. Calling get_all
+means you don't need to worry about explicitly handling pagination in requests.
+
+=head2 list( $args )
+
+Returns an iterator object.
+
+=head2 update( $args )
 
 =head1 AUTHORS
 
@@ -167,7 +191,7 @@ Olaf Alders <olaf@wundercounter.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2010 by Edmund von der Burg & Olaf Alders.
+This software is copyright (c) 2011 by Edmund von der Burg & Olaf Alders.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

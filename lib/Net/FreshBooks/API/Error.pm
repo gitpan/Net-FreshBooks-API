@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Error;
 BEGIN {
-  $Net::FreshBooks::API::Error::VERSION = '0.18';
+  $Net::FreshBooks::API::Error::VERSION = '0.19';
 }
 
 use Moose;
@@ -30,6 +30,7 @@ sub handle_server_error {
 
 1;
 
+
 __END__
 =pod
 
@@ -39,7 +40,17 @@ Net::FreshBooks::API::Error
 
 =head1 VERSION
 
-version 0.18
+version 0.19
+
+=head1 SYNOPSIS
+
+This error handling module is experimental.  You should not rely on it to
+exist in later releases.
+
+=head2 handle_server_error
+
+Croaks with an appropriate error message if die_on_server_error is true.
+Otherwise the error is stored in ->last_server_error.
 
 =head1 AUTHORS
 
@@ -57,7 +68,7 @@ Olaf Alders <olaf@wundercounter.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2010 by Edmund von der Burg & Olaf Alders.
+This software is copyright (c) 2011 by Edmund von der Burg & Olaf Alders.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

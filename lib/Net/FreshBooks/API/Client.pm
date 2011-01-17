@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Client;
 BEGIN {
-  $Net::FreshBooks::API::Client::VERSION = '0.18';
+  $Net::FreshBooks::API::Client::VERSION = '0.19';
 }
 
 use Moose;
@@ -70,7 +70,7 @@ Net::FreshBooks::API::Client
 
 =head1 VERSION
 
-version 0.18
+version 0.19
 
 =head1 SYNOPSIS
 
@@ -165,7 +165,7 @@ Olaf Alders <olaf@wundercounter.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2010 by Edmund von der Burg & Olaf Alders.
+This software is copyright (c) 2011 by Edmund von der Burg & Olaf Alders.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

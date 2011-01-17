@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::OAuth;
 BEGIN {
-  $Net::FreshBooks::API::OAuth::VERSION = '0.18';
+  $Net::FreshBooks::API::OAuth::VERSION = '0.19';
 }
 
 use base qw(Net::OAuth::Simple);
@@ -23,8 +23,6 @@ sub new {
         }
     }
     
-    warn dump( \%tokens );
-
     my $account_name = delete $tokens{account_name};
     
     my $url = 'https://' . $account_name . '.freshbooks.com/oauth';
@@ -217,7 +215,7 @@ Net::FreshBooks::API::OAuth
 
 =head1 VERSION
 
-version 0.18
+version 0.19
 
 =head2 DESCRIPTION
 
@@ -291,7 +289,7 @@ Olaf Alders <olaf@wundercounter.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2010 by Edmund von der Burg & Olaf Alders.
+This software is copyright (c) 2011 by Edmund von der Burg & Olaf Alders.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

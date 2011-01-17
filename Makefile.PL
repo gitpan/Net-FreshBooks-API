@@ -31,6 +31,7 @@ my %WriteMakefileArgs = (
   'LICENSE' => 'perl',
   'NAME' => 'Net::FreshBooks::API',
   'PREREQ_PM' => {
+    'B::Hooks::EndOfScope' => '0.09',
     'Carp' => '0',
     'Clone' => '0',
     'Data::Dump' => '0',
@@ -45,9 +46,10 @@ my %WriteMakefileArgs = (
     'WWW::Mechanize' => '0',
     'XML::LibXML' => '0',
     'XML::Simple' => '0',
-    'namespace::autoclean' => '0'
+    'namespace::autoclean' => '0.11',
+    'parent' => '0.224'
   },
-  'VERSION' => '0.18',
+  'VERSION' => '0.19',
   'test' => {
     'TESTS' => 't/*.t'
   }

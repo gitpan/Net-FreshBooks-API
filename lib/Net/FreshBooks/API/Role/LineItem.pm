@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Role::LineItem;
 BEGIN {
-  $Net::FreshBooks::API::Role::LineItem::VERSION = '0.18';
+  $Net::FreshBooks::API::Role::LineItem::VERSION = '0.19';
 }
 
 use Moose::Role;
@@ -21,6 +21,7 @@ sub add_line {
 
 1;
 
+
 __END__
 =pod
 
@@ -30,7 +31,14 @@ Net::FreshBooks::API::Role::LineItem
 
 =head1 VERSION
 
-version 0.18
+version 0.19
+
+=head1 SYNOPSIS
+
+Provides line item functionality to Invoices and Estimates. See those modules
+for specific examples of how to use this method.
+
+=head2 add_line( $args)
 
 =head1 AUTHORS
 
@@ -48,7 +56,7 @@ Olaf Alders <olaf@wundercounter.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2010 by Edmund von der Burg & Olaf Alders.
+This software is copyright (c) 2011 by Edmund von der Burg & Olaf Alders.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
