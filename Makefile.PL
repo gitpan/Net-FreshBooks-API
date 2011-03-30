@@ -42,6 +42,7 @@ my %WriteMakefileArgs = (
     'Net::OAuth::Simple' => '0',
     'Params::Validate' => '0',
     'Path::Class' => '0',
+    'Scalar::Util' => '0',
     'URI' => '0',
     'WWW::Mechanize' => '0',
     'XML::LibXML' => '0',
@@ -49,7 +50,7 @@ my %WriteMakefileArgs = (
     'namespace::autoclean' => '0.11',
     'parent' => '0.224'
   },
-  'VERSION' => '0.19',
+  'VERSION' => '0.20',
   'test' => {
     'TESTS' => 't/*.t'
   }

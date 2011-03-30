@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Payment;
 BEGIN {
-  $Net::FreshBooks::API::Payment::VERSION = '0.19';
+  $Net::FreshBooks::API::Payment::VERSION = '0.20';
 }
 
 use Moose;
@@ -32,17 +32,19 @@ __PACKAGE__->meta->make_immutable();
 
 1;
 
+# ABSTRACT: FreshBooks Payment access
+
 
 __END__
 =pod
 
 =head1 NAME
 
-Net::FreshBooks::API::Payment
+Net::FreshBooks::API::Payment - FreshBooks Payment access
 
 =head1 VERSION
 
-version 0.19
+version 0.20
 
 =head1 SYNOPSIS
 

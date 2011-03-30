@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API;
 BEGIN {
-  $Net::FreshBooks::API::VERSION = '0.19';
+  $Net::FreshBooks::API::VERSION = '0.20';
 }
 use Moose;
 
@@ -16,8 +16,10 @@ use Data::Dump qw( dump );
 use Net::FreshBooks::API::Client;
 use Net::FreshBooks::API::Error;
 use Net::FreshBooks::API::Estimate;
+use Net::FreshBooks::API::Gateway;
 use Net::FreshBooks::API::Invoice;
 use Net::FreshBooks::API::OAuth;
+use Net::FreshBooks::API::Language;
 use Net::FreshBooks::API::Payment;
 use Net::FreshBooks::API::Recurring;
 use Path::Class;
@@ -84,8 +86,16 @@ sub estimate {
     return shift->_create_object( 'Estimate', @_ );
 }
 
+sub gateway {
+    return shift->_create_object( 'Gateway', @_ );
+}
+
 sub invoice {
     return shift->_create_object( 'Invoice', @_ );
+}
+
+sub language {
+    return shift->_create_object( 'Language', @_ );
 }
 
 sub payment {
@@ -225,7 +235,7 @@ Net::FreshBooks::API - Easy OO access to the FreshBooks.com API
 
 =head1 VERSION
 
-version 0.19
+version 0.20
 
 =head1 SYNOPSIS
 
@@ -383,6 +393,10 @@ Creates and returns a new L<Net::FreshBooks::API::Estimate> object.
 =head2 invoice
 
 Creates and returns a new L<Net::FreshBooks::API::Invoice> object.
+
+=head2 language
+
+Creates and returns a new L<Net::FreshBooks::API::Language> object.
 
 =head2 payment
 

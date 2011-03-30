@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::InvoiceLine;
 BEGIN {
-  $Net::FreshBooks::API::InvoiceLine::VERSION = '0.19';
+  $Net::FreshBooks::API::InvoiceLine::VERSION = '0.20';
 }
 
 use Moose;
@@ -33,16 +33,18 @@ __PACKAGE__->meta->make_immutable();
 
 1;
 
+# ABSTRACT: Adds Line Item support to FreshBooks Invoices
+
 __END__
 =pod
 
 =head1 NAME
 
-Net::FreshBooks::API::InvoiceLine
+Net::FreshBooks::API::InvoiceLine - Adds Line Item support to FreshBooks Invoices
 
 =head1 VERSION
 
-version 0.19
+version 0.20
 
 =head1 AUTHORS
 

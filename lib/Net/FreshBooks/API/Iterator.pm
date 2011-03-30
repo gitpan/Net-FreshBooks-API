@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Iterator;
 BEGIN {
-  $Net::FreshBooks::API::Iterator::VERSION = '0.19';
+  $Net::FreshBooks::API::Iterator::VERSION = '0.20';
 }
 
 use Moose;
@@ -77,17 +77,19 @@ __PACKAGE__->meta->make_immutable( inline_constructor => 0 );
 
 1;
 
+# ABSTRACT: FreshBooks Iterator objects
+
 
 __END__
 =pod
 
 =head1 NAME
 
-Net::FreshBooks::API::Iterator
+Net::FreshBooks::API::Iterator - FreshBooks Iterator objects
 
 =head1 VERSION
 
-version 0.19
+version 0.20
 
 =head2 new
 

@@ -3,11 +3,13 @@ use warnings;
 
 package Net::FreshBooks::API::Role::CRUD;
 BEGIN {
-  $Net::FreshBooks::API::Role::CRUD::VERSION = '0.19';
+  $Net::FreshBooks::API::Role::CRUD::VERSION = '0.20';
 }
 
 use Moose::Role;
 use Data::Dump qw( dump );
+
+with 'Net::FreshBooks::API::Role::Iterator';
 
 sub create {
     my $self   = shift;
@@ -26,6 +28,16 @@ sub create {
         for grep { !defined $create_args{$_} }
         keys %create_args;
 
+    my $fields = $self->_fields;
+
+    foreach my $key ( keys %create_args ) {
+        if ( exists $fields->{$key}->{presented_as}
+            && $fields->{$key}->{presented_as} eq 'object' )
+        {
+            delete $create_args{$key} if !$create_args{$key}->_validates;
+        }
+    }
+
     my $res = $self->send_request(
         {   _method         => $method,
             $self->api_name => \%create_args,
@@ -42,14 +54,21 @@ sub update {
     my $self   = shift;
     my $args   = shift;
     my $method = $self->method_string( 'update' );
-    
+
     # process any fields passed directly to this method
+    my $fields = $self->_fields;
     foreach my $field ( $self->field_names_rw ) {
         $self->$field( $args->{$field} ) if exists $args->{$field};
     }
-    
+
     my %args = ();
-    $args{$_} = $self->$_ for ( $self->field_names_rw, $self->id_field );
+    for my $field ( $self->field_names_rw, $self->id_field ) {
+        next
+            if ( exists $fields->{$field}->{presented_as}
+            && $fields->{$field}->{presented_as} eq 'object'
+            && !$self->$field->_validates );
+        $args{$field} = $self->$field;
+    }
 
     $self->_fb->_log( debug => dump( \%args ) );
 
@@ -60,20 +79,6 @@ sub update {
     );
 
     return $self;
-}
-
-sub get {
-    my $self   = shift;
-    my $args   = shift;
-    my $method = $self->method_string( 'get' );
-
-    my $res = $self->send_request(
-        {   _method => $method,
-            %$args,
-        }
-    );
-
-    return $self->_fill_in_from_node( $res );
 }
 
 sub delete {    ## no critic
@@ -92,51 +97,9 @@ sub delete {    ## no critic
     return 1;
 }
 
-
-sub list {
-    my $self = shift;
-    my $args = shift || {};
-
-    return Net::FreshBooks::API::Iterator->new(
-        {   parent_object => $self,
-            args          => $args,
-        }
-    );
-}
-
-sub get_all {
-
-    my $self = shift;
-    my $args = shift || {};
-
-    # override any pagination
-    $args->{per_page} = 100;
-
-    my @all     = ();
-    my $per_page = 100;
-    my $page     = 1;
-
-    while ( 1 ) {
-
-        my @subset = ();
-        $args->{page} = $page;
-        my $iter = $self->list( $args );
-
-        while ( my $obj = $iter->next ) {
-            push @subset, $obj;
-        }
-        push @all, @subset;
-
-        last if scalar @subset < $per_page;
-
-        ++$page;
-    }
-
-    return \@all;
-
-}
-
 1;
+
+# ABSTRACT: Create, Read and Update roles
 
 
 __END__
@@ -144,34 +107,24 @@ __END__
 
 =head1 NAME
 
-Net::FreshBooks::API::Role::CRUD
+Net::FreshBooks::API::Role::CRUD - Create, Read and Update roles
 
 =head1 VERSION
 
-version 0.19
+version 0.20
 
 =head1 SYNOPSIS
 
-These roles are used for the more repetitive Create, Read, Update and Delete
-functions.  See the various modules which provide these methods for specific
-examples of how they are used.
+These roles are used for the more repetitive Create, Update and Delete
+functions. Read functions have been broken out into the Iterator roles. See
+the various modules which implement these methods for specific examples of how
+these methods are used.
 
 =head2 create( $args )
 
 =head2 delete
 
 Uses the id field of the current object to perform a delete operation.
-
-=head2 get( $args )
-
-=head2 get_all( $args )
-
-Iterates over all pages of results provided by FreshBooks. Calling get_all
-means you don't need to worry about explicitly handling pagination in requests.
-
-=head2 list( $args )
-
-Returns an iterator object.
 
 =head2 update( $args )
 

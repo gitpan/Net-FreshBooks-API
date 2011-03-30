@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Client;
 BEGIN {
-  $Net::FreshBooks::API::Client::VERSION = '0.19';
+  $Net::FreshBooks::API::Client::VERSION = '0.20';
 }
 
 use Moose;
@@ -60,17 +60,19 @@ __PACKAGE__->meta->make_immutable();
 
 1;
 
+# ABSTRACT: FreshBooks Client access
+
 
 __END__
 =pod
 
 =head1 NAME
 
-Net::FreshBooks::API::Client
+Net::FreshBooks::API::Client - FreshBooks Client access
 
 =head1 VERSION
 
-version 0.19
+version 0.20
 
 =head1 SYNOPSIS
 
@@ -120,14 +122,14 @@ the update() method, which is described below.
 
 =head2 links
 
-Returns a L<Net::FreshBooks::API::Links> object, which returns FreshBooks
+Returns an L<Net::FreshBooks::API::Links> object, which returns FreshBooks
 URLs.
 
     print "Client view: " . $fb->client->links->client_view;
 
 =head2 list
 
-Returns n L<Net::FreshBooks::API::Iterator> object. Currently,
+Returns an L<Net::FreshBooks::API::Iterator> object. Currently,
 all list() functionality defaults to 15 items per page.
 
     #list all active clients

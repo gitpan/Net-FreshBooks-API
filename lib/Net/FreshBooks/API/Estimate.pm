@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Estimate;
 BEGIN {
-  $Net::FreshBooks::API::Estimate::VERSION = '0.19';
+  $Net::FreshBooks::API::Estimate::VERSION = '0.20';
 }
 
 use Moose;
@@ -61,17 +61,19 @@ __PACKAGE__->meta->make_immutable();
 
 1;
 
+# ABSTRACT: FreshBooks Estimate access
+
 
 __END__
 =pod
 
 =head1 NAME
 
-Net::FreshBooks::API::Estimate
+Net::FreshBooks::API::Estimate - FreshBooks Estimate access
 
 =head1 VERSION
 
-version 0.19
+version 0.20
 
 =head1 SYNOPSIS
 

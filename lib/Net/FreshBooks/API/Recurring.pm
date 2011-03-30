@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Recurring;
 BEGIN {
-  $Net::FreshBooks::API::Recurring::VERSION = '0.19';
+  $Net::FreshBooks::API::Recurring::VERSION = '0.20';
 }
 
 use Moose;
@@ -11,7 +11,22 @@ extends 'Net::FreshBooks::API::Base';
 with 'Net::FreshBooks::API::Role::CRUD';
 with 'Net::FreshBooks::API::Role::LineItem';
 
-has $_ => ( is => _fields()->{$_}->{is} ) for sort keys %{ _fields() };
+use Net::FreshBooks::API::Recurring::AutoBill;
+
+for ( sort keys %{ _fields() } ) {
+    has $_ => ( is => _fields()->{$_}->{is} ) if $_ ne 'autobill';
+}
+
+has 'autobill' => (
+    is      => 'rw',
+    builder => '_build_autobill',
+);
+
+sub _build_autobill {
+
+    my $self = shift;
+    return Net::FreshBooks::API::Recurring::AutoBill->new;
+}
 
 sub _fields {
 
@@ -41,7 +56,11 @@ sub _fields {
 
         # custom fields
         # autobill will need to be an object similar to InvoiceLine
-        #autobill        => { ... },
+        autobill => {
+            is           => 'rw',
+            made_of      => 'Net::FreshBooks::API::Recurring::AutoBill',
+            presented_as => 'object',
+        },
         frequency => { is => 'rw' },
         lines     => {
             is           => 'rw',
@@ -61,17 +80,19 @@ __PACKAGE__->meta->make_immutable();
 
 1;
 
+# ABSTRACT: FreshBooks Recurring Item access
+
 
 __END__
 =pod
 
 =head1 NAME
 
-Net::FreshBooks::API::Recurring
+Net::FreshBooks::API::Recurring - FreshBooks Recurring Item access
 
 =head1 VERSION
 
-version 0.19
+version 0.20
 
 =head1 SYNOPSIS
 
@@ -142,6 +163,19 @@ version 0.19
     # or more quickly
     $referring->update( { organization => 'Perl Foundation', } );
 
+=head2 autobill
+
+Returns a L<Net::FreshBooks::API::Recurring::AutoBill> object
+
+    my $autobill = $recurring_item->autobill;
+    $autobill->gateway_name('PayPal Payflow Pro');
+    $autobill->card->name('Tim Toady');
+    $autobill->card->number('4111 1111 1111 1111');
+    $autobill->card->expiration->month(12);
+    $autobill->card->expiration->year(2015);
+    
+    $recurring_item->create;
+
 =head2 list
 
 Returns a L<Net::FreshBooks::API::Iterator> object.
@@ -158,10 +192,6 @@ Returns an ARRAYREF of Net::FreshBooks::API::InvoiceLine objects
     foreach my $line ( @{ $recurring->lines } ) {
         print $line->amount, "\n";
     }
-
-=head1 NAME
-
-Net::FreshBooks::API::Recurring - FreshBooks Recurring Items
 
 =head1 AUTHOR
 
