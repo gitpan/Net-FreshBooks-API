@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Estimate;
 BEGIN {
-  $Net::FreshBooks::API::Estimate::VERSION = '0.20';
+  $Net::FreshBooks::API::Estimate::VERSION = '0.21';
 }
 
 use Moose;
@@ -73,7 +73,7 @@ Net::FreshBooks::API::Estimate - FreshBooks Estimate access
 
 =head1 VERSION
 
-version 0.20
+version 0.21
 
 =head1 SYNOPSIS
 

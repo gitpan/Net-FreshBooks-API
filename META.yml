@@ -31,6 +31,7 @@ requires:
   Carp: 0
   Clone: 0
   Data::Dump: 0
+  LWP::Protocol::https: 0
   LWP::UserAgent: 0
   Lingua::EN::Inflect: 0
   Moose: 0
@@ -46,7 +47,7 @@ requires:
   namespace::autoclean: 0.11
   parent: 0.224
 resources:
-  bugtracker: http://rt.cpan.org/Public/Dist/Display.html?Name=Net-FreshBooks-API
+  bugtracker: http://github.com/oalders/Net-FreshBooks-API/issues
   homepage: http://github.com/oalders/net-freshbooks-api/tree
   repository: git://github.com/oalders/net-freshbooks-api.git
-version: 0.20
+version: 0.21

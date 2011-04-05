@@ -1,6 +1,9 @@
+use strict;
+use warnings;
+
 package Net::FreshBooks::API::Recurring::AutoBill::Card::Expiration;
 BEGIN {
-  $Net::FreshBooks::API::Recurring::AutoBill::Card::Expiration::VERSION = '0.20';
+  $Net::FreshBooks::API::Recurring::AutoBill::Card::Expiration::VERSION = '0.21';
 }
 
 use Moose;
@@ -41,7 +44,7 @@ Net::FreshBooks::API::Recurring::AutoBill::Card::Expiration - FreshBooks Autobil
 
 =head1 VERSION
 
-version 0.20
+version 0.21
 
 =head1 AUTHORS
 

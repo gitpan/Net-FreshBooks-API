@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Language;
 BEGIN {
-  $Net::FreshBooks::API::Language::VERSION = '0.20';
+  $Net::FreshBooks::API::Language::VERSION = '0.21';
 }
 
 use Moose;
@@ -37,7 +37,7 @@ Net::FreshBooks::API::Language - List the languages your FreshBooks account supp
 
 =head1 VERSION
 
-version 0.20
+version 0.21
 
 =head1 SYNOPSIS
 

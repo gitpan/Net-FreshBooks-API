@@ -3,11 +3,12 @@ use warnings;
 
 package Net::FreshBooks::API::Role::CRUD;
 BEGIN {
-  $Net::FreshBooks::API::Role::CRUD::VERSION = '0.20';
+  $Net::FreshBooks::API::Role::CRUD::VERSION = '0.21';
 }
 
 use Moose::Role;
 use Data::Dump qw( dump );
+use Scalar::Util qw( blessed );
 
 with 'Net::FreshBooks::API::Role::Iterator';
 
@@ -31,10 +32,11 @@ sub create {
     my $fields = $self->_fields;
 
     foreach my $key ( keys %create_args ) {
-        if ( exists $fields->{$key}->{presented_as}
-            && $fields->{$key}->{presented_as} eq 'object' )
+        if (   exists $fields->{$key}->{presented_as}
+            && $fields->{$key}->{presented_as} eq 'object'
+            && !$create_args{$key}->_validates )
         {
-            delete $create_args{$key} if !$create_args{$key}->_validates;
+            delete $create_args{$key};
         }
     }
 
@@ -63,10 +65,16 @@ sub update {
 
     my %args = ();
     for my $field ( $self->field_names_rw, $self->id_field ) {
-        next
-            if ( exists $fields->{$field}->{presented_as}
+        
+        # we're not forcing fields to be objects.  for example, setting a
+        # field to undef will send an empty element, which is how autobill,
+        # for example, can be deleted
+        if (   exists $fields->{$field}->{presented_as}
             && $fields->{$field}->{presented_as} eq 'object'
-            && !$self->$field->_validates );
+            && blessed( $self->$field ) )
+        {
+            next if !$self->$field->_validates;
+        }
         $args{$field} = $self->$field;
     }
 
@@ -111,7 +119,7 @@ Net::FreshBooks::API::Role::CRUD - Create, Read and Update roles
 
 =head1 VERSION
 
-version 0.20
+version 0.21
 
 =head1 SYNOPSIS
 

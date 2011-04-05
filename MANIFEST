@@ -15,7 +15,6 @@ examples/oauth_webapp.pl
 lib/Net/FreshBooks/API.pm
 lib/Net/FreshBooks/API/Base.pm
 lib/Net/FreshBooks/API/Client.pm
-lib/Net/FreshBooks/API/Error.pm
 lib/Net/FreshBooks/API/Estimate.pm
 lib/Net/FreshBooks/API/Gateway.pm
 lib/Net/FreshBooks/API/Invoice.pm
@@ -30,6 +29,7 @@ lib/Net/FreshBooks/API/Recurring/AutoBill.pm
 lib/Net/FreshBooks/API/Recurring/AutoBill/Card.pm
 lib/Net/FreshBooks/API/Recurring/AutoBill/Card/Expiration.pm
 lib/Net/FreshBooks/API/Role/CRUD.pm
+lib/Net/FreshBooks/API/Role/Common.pm
 lib/Net/FreshBooks/API/Role/Iterator.pm
 lib/Net/FreshBooks/API/Role/LineItem.pm
 lib/Net/FreshBooks/API/Role/SendBy.pm

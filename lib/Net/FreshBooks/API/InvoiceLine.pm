@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::InvoiceLine;
 BEGIN {
-  $Net::FreshBooks::API::InvoiceLine::VERSION = '0.20';
+  $Net::FreshBooks::API::InvoiceLine::VERSION = '0.21';
 }
 
 use Moose;
@@ -44,7 +44,7 @@ Net::FreshBooks::API::InvoiceLine - Adds Line Item support to FreshBooks Invoice
 
 =head1 VERSION
 
-version 0.20
+version 0.21
 
 =head1 AUTHORS
 

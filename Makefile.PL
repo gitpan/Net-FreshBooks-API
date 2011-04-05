@@ -35,6 +35,7 @@ my %WriteMakefileArgs = (
     'Carp' => '0',
     'Clone' => '0',
     'Data::Dump' => '0',
+    'LWP::Protocol::https' => '0',
     'LWP::UserAgent' => '0',
     'Lingua::EN::Inflect' => '0',
     'Moose' => '0',
@@ -50,7 +51,7 @@ my %WriteMakefileArgs = (
     'namespace::autoclean' => '0.11',
     'parent' => '0.224'
   },
-  'VERSION' => '0.20',
+  'VERSION' => '0.21',
   'test' => {
     'TESTS' => 't/*.t'
   }
