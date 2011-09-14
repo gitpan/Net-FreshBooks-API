@@ -2,8 +2,8 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API;
-BEGIN {
-  $Net::FreshBooks::API::VERSION = '0.21';
+{
+  $Net::FreshBooks::API::VERSION = '0.22';
 }
 use Moose;
 
@@ -16,6 +16,7 @@ use Data::Dump qw( dump );
 
 #use Devel::SimpleTrace;
 use Net::FreshBooks::API::Client;
+use Net::FreshBooks::API::Client::Contact;
 use Net::FreshBooks::API::Estimate;
 use Net::FreshBooks::API::Gateway;
 use Net::FreshBooks::API::Invoice;
@@ -100,6 +101,8 @@ sub _create_object {
 
     my $args = shift || {};
     my $obj = $class->new( _fb => $self, %$args );
+    $obj->verbose( $self->verbose );
+    $obj->die_on_server_error( $self->die_on_server_error );
 
     return $obj;
 
@@ -224,7 +227,7 @@ Net::FreshBooks::API - Easy OO access to the FreshBooks.com API
 
 =head1 VERSION
 
-version 0.21
+version 0.22
 
 =head1 SYNOPSIS
 
@@ -526,7 +529,7 @@ Developed for Raybec Communications L<http://www.raybec.com>
 
 L<WWW::FreshBooks::API> - an alternative interface to FreshBooks.
 
-L<http://developers.freshbooks.com/overview/> the FreshBooks API documentation.
+L<http://developers.freshbooks.com> the FreshBooks API documentation.
 
 =head1 AUTHORS
 

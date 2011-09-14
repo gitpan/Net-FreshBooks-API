@@ -7,6 +7,7 @@ META.yml
 Makefile.PL
 README
 TODO
+bacchus-nfa.komodoproject
 dist.ini
 examples/OAuthDemo.pm
 examples/create_recurring_item.pl
@@ -15,6 +16,7 @@ examples/oauth_webapp.pl
 lib/Net/FreshBooks/API.pm
 lib/Net/FreshBooks/API/Base.pm
 lib/Net/FreshBooks/API/Client.pm
+lib/Net/FreshBooks/API/Client/Contact.pm
 lib/Net/FreshBooks/API/Estimate.pm
 lib/Net/FreshBooks/API/Gateway.pm
 lib/Net/FreshBooks/API/Invoice.pm
@@ -33,7 +35,6 @@ lib/Net/FreshBooks/API/Role/Common.pm
 lib/Net/FreshBooks/API/Role/Iterator.pm
 lib/Net/FreshBooks/API/Role/LineItem.pm
 lib/Net/FreshBooks/API/Role/SendBy.pm
-net-freshbooks-api.komodoproject
 t/001_api.t
 t/002_base-parameters_to_request_xml.t
 t/003-client_create.t

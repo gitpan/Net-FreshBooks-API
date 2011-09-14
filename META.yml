@@ -11,13 +11,14 @@ build_requires:
   Sub::Override: 0
   Test::Exception: 0
   Test::More: 0
+  Test::Simple: 0.98
   Test::WWW::Mechanize: 0
   Test::XML: 0
 configure_requires:
-  ExtUtils::MakeMaker: 6.31
+  ExtUtils::MakeMaker: 6.30
   Module::Build: 0.3601
 dynamic_config: 0
-generated_by: 'Dist::Zilla version 4.200000, CPAN::Meta::Converter version 2.102400'
+generated_by: 'Dist::Zilla version 4.200015, CPAN::Meta::Converter version 2.112150'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -48,6 +49,6 @@ requires:
   parent: 0.224
 resources:
   bugtracker: http://github.com/oalders/Net-FreshBooks-API/issues
-  homepage: http://github.com/oalders/net-freshbooks-api/tree
-  repository: git://github.com/oalders/net-freshbooks-api.git
-version: 0.21
+  homepage: https://github.com/oalders/net-freshbooks-api
+  repository: https://github.com/oalders/net-freshbooks-api.git
+version: 0.22

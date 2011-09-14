@@ -2,8 +2,8 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API::Estimate;
-BEGIN {
-  $Net::FreshBooks::API::Estimate::VERSION = '0.21';
+{
+  $Net::FreshBooks::API::Estimate::VERSION = '0.22';
 }
 
 use Moose;
@@ -73,7 +73,7 @@ Net::FreshBooks::API::Estimate - FreshBooks Estimate access
 
 =head1 VERSION
 
-version 0.21
+version 0.22
 
 =head1 SYNOPSIS
 
@@ -162,13 +162,13 @@ Returns a L<Net::FreshBooks::API::Iterator> object.
     # list unpaid estimates
     my $estimates = $fb->estimate->list({ status => 'unpaid' });
 
-    while ( my $estimate = $estimates->list ) {
+    while ( my $estimate = $estimates->next ) {
         print $estimate->estimate_id, "\n";
     }
 
 =head2 lines
 
-Returns an ARRAYREF of Net::FreshBooks::API::InvoiceLine objects
+Returns an ARRAYREF of L<Net::FreshBooks::API::InvoiceLine> objects
 
     foreach my $line ( @{ $estimate->lines } ) {
         print $line->amount, "\n";

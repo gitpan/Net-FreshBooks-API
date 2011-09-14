@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Komodo Project File - DO NOT EDIT -->
-<project id="c450baf4-ff0c-4743-8f12-a64c89f6408e" kpf_version="5" name="net-freshbooks-api.komodoproject">
-<preference-set idref="c450baf4-ff0c-4743-8f12-a64c89f6408e">
-  <boolean id="import_live">1</boolean>
-</preference-set>
-</project>

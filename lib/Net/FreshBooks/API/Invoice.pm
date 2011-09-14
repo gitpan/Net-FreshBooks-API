@@ -2,8 +2,8 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API::Invoice;
-BEGIN {
-  $Net::FreshBooks::API::Invoice::VERSION = '0.21';
+{
+  $Net::FreshBooks::API::Invoice::VERSION = '0.22';
 }
 
 use Moose;
@@ -77,7 +77,7 @@ Net::FreshBooks::API::Invoice - FreshBooks Invoice access
 
 =head1 VERSION
 
-version 0.21
+version 0.22
 
 =head1 SYNOPSIS
 
@@ -122,7 +122,7 @@ Returns a L<Net::FreshBooks::API::Iterator> object.
     # list unpaid invoices
     my $invoices = $fb->invoice->list({ status => 'unpaid' });
 
-    while ( my $invoice = $invoices->list ) {
+    while ( my $invoice = $invoices->next ) {
         print $invoice->invoice_id, "\n";
     }
 

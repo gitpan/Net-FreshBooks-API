@@ -2,8 +2,8 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API::Role::Common;
-BEGIN {
-  $Net::FreshBooks::API::Role::Common::VERSION = '0.21';
+{
+  $Net::FreshBooks::API::Role::Common::VERSION = '0.22';
 }
 
 use Moose::Role;
@@ -18,7 +18,10 @@ has '_return_xml'  => ( is => 'rw', isa => 'Str' );
 has '_request_xml' => ( is => 'rw', isa => 'Str' );
 
 sub _build_die_on_server_error { return 1; }
-sub _build_verbose             { return 0; }
+sub _build_verbose             {
+    return 1 if $ENV{VERBOSE} || $ENV{DEBUG};
+    return 0;
+}
 
 sub _handle_server_error {
 
@@ -62,7 +65,7 @@ Net::FreshBooks::API::Role::Common - Roles common to both Base.pm and API.pm
 
 =head1 VERSION
 
-version 0.21
+version 0.22
 
 =head1 SYNOPSIS
 

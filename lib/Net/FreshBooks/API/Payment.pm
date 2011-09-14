@@ -2,8 +2,8 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API::Payment;
-BEGIN {
-  $Net::FreshBooks::API::Payment::VERSION = '0.21';
+{
+  $Net::FreshBooks::API::Payment::VERSION = '0.22';
 }
 
 use Moose;
@@ -44,7 +44,7 @@ Net::FreshBooks::API::Payment - FreshBooks Payment access
 
 =head1 VERSION
 
-version 0.21
+version 0.22
 
 =head1 SYNOPSIS
 
@@ -79,7 +79,7 @@ Create a new payment in the FreshBooks system
 Returns a L<Net::FreshBooks::API::Iterator> object.
 
     my $payments = $fb->payment->list;
-    while ( my $payment = $payments->list ) {
+    while ( my $payment = $payments->next ) {
         print $payment->payment_id, "\n";
     }
 

@@ -14,11 +14,12 @@ my %module_build_args = (
     'Sub::Override' => '0',
     'Test::Exception' => '0',
     'Test::More' => '0',
+    'Test::Simple' => '0.98',
     'Test::WWW::Mechanize' => '0',
     'Test::XML' => '0'
   },
   'configure_requires' => {
-    'ExtUtils::MakeMaker' => '6.31',
+    'ExtUtils::MakeMaker' => '6.30',
     'Module::Build' => '0.3601'
   },
   'dist_abstract' => 'Easy OO access to the FreshBooks.com API',
@@ -27,7 +28,7 @@ my %module_build_args = (
     'Olaf Alders <olaf@wundercounter.com>'
   ],
   'dist_name' => 'Net-FreshBooks-API',
-  'dist_version' => '0.21',
+  'dist_version' => '0.22',
   'license' => 'perl',
   'module_name' => 'Net::FreshBooks::API',
   'recommends' => {},

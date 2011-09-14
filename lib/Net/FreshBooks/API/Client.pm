@@ -2,8 +2,8 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API::Client;
-BEGIN {
-  $Net::FreshBooks::API::Client::VERSION = '0.21';
+{
+  $Net::FreshBooks::API::Client::VERSION = '0.22';
 }
 
 use Moose;
@@ -14,46 +14,60 @@ has $_ => ( is => _fields()->{$_}->{is} ) for sort keys %{ _fields() };
 
 sub _fields {
     return {
-        client_id     => { is => 'ro' },
-        currency_code => { is => 'rw' },
-        first_name    => { is => 'rw' },
-        last_name     => { is => 'rw' },
+        client_id    => { is => 'ro' },
+        first_name   => { is => 'rw' },
+        last_name    => { is => 'rw' },
+        organization => { is => 'rw' },
+        email        => { is => 'rw' },
+        username     => { is => 'rw' },
+        contacts     => {
+            is           => 'rw',
+            made_of      => 'Net::FreshBooks::API::Client::Contact',
+            presented_as => 'array',
+        },
+        password      => { is => 'rw' },
+        work_phone    => { is => 'rw' },
+        home_phone    => { is => 'rw' },
+        mobile        => { is => 'rw' },
+        fax           => { is => 'rw' },
         language      => { is => 'rw' },
+        currency_code => { is => 'rw' },
+        credit        => { is => 'ro' },
         notes         => { is => 'rw' },
-        organization  => { is => 'rw' },
-        p_city        => { is => 'rw' },
-        p_code        => { is => 'rw' },
-        p_country     => { is => 'rw' },
-        p_state       => { is => 'rw' },
-        p_street1     => { is => 'rw' },
-        p_street2     => { is => 'rw' },
-        vat_name      => { is => 'rw' },
-        vat_number    => { is => 'rw' },
 
-        # custom fields
-        credit     => { is => 'ro' },
-        email      => { is => 'rw' },
-        fax        => { is => 'rw' },
-        home_phone => { is => 'rw' },
-        links      => {
+        p_street1 => { is => 'rw' },
+        p_street2 => { is => 'rw' },
+        p_city    => { is => 'rw' },
+        p_state   => { is => 'rw' },
+        p_country => { is => 'rw' },
+        p_code    => { is => 'rw' },
+
+        s_street1 => { is => 'rw' },
+        s_street2 => { is => 'rw' },
+        s_city    => { is => 'rw' },
+        s_state   => { is => 'rw' },
+        s_country => { is => 'rw' },
+        s_code    => { is => 'rw' },
+
+        links => {
             is           => 'ro',
             made_of      => 'Net::FreshBooks::API::Links',
             presented_as => 'single',
         },
-        mobile     => { is => 'rw' },
-        password   => { is => 'rw' },
-        s_city     => { is => 'rw' },
-        s_code     => { is => 'rw' },
-        s_country  => { is => 'rw' },
-        s_state    => { is => 'rw' },
-        s_street1  => { is => 'rw' },
-        s_street2  => { is => 'rw' },
-        username   => { is => 'rw' },
-        work_phone => { is => 'rw' },
 
+        vat_name   => { is => 'rw' },
+        vat_number => { is => 'rw' },
         folder     => { is => 'ro' },
+        updated    => { is => 'ro' },
 
     };
+}
+
+sub add_contact {
+    my $self = shift;
+    my $args = shift;
+    push @{ $self->{contacts} ||= [] },
+        Net::FreshBooks::API::Client::Contact->new($args);
 }
 
 __PACKAGE__->meta->make_immutable();
@@ -72,7 +86,7 @@ Net::FreshBooks::API::Client - FreshBooks Client access
 
 =head1 VERSION
 
-version 0.21
+version 0.22
 
 =head1 SYNOPSIS
 
@@ -119,6 +133,29 @@ the update() method, which is described below.
     # fetch a client and then delete it
     my $client = $fb->client->get({ client_id => $client_id });
     $client->delete;
+
+=head2 contacts
+
+Returns an ARRAYREF of L<Net::FreshBooks::API::Client::Contact> objects
+
+    foreach my $contact ( @{ $client->contacts } ) {
+        print $contact->first_name, "\n";
+    }
+
+=head2 add_contact
+
+Create a new L<Net::FreshBooks::API::Client::Contact> object and add it to the
+end of the list of cotacts.
+
+    my $bool = $client->add_contact(
+        {   username   => 'chucknorris',
+            first_name => 'Chuck',
+            last_name  => 'Norris',
+            email      => 'chuck@norris.com',
+            phone1     => 1112223333,
+            phone2     => 4445556666,
+        }
+    );
 
 =head2 links
 

@@ -2,8 +2,8 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API::Base;
-BEGIN {
-  $Net::FreshBooks::API::Base::VERSION = '0.21';
+{
+  $Net::FreshBooks::API::Base::VERSION = '0.22';
 }
 
 use Moose;
@@ -22,6 +22,7 @@ use Net::FreshBooks::API::Iterator;
 
 my %plural_to_singular = (
     clients  => 'client',
+    contacts => 'contact',
     invoices => 'invoice',
     lines    => 'line',
     payments => 'payment',
@@ -381,7 +382,7 @@ Net::FreshBooks::API::Base - Base class
 
 =head1 VERSION
 
-version 0.21
+version 0.22
 
 =head2 new_from_node
 
