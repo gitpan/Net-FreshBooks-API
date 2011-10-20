@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API;
 {
-  $Net::FreshBooks::API::VERSION = '0.22';
+  $Net::FreshBooks::API::VERSION = '0.23';
 }
 use Moose;
 
@@ -227,7 +227,7 @@ Net::FreshBooks::API - Easy OO access to the FreshBooks.com API
 
 =head1 VERSION
 
-version 0.22
+version 0.23
 
 =head1 SYNOPSIS
 

@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Recurring::AutoBill;
 {
-  $Net::FreshBooks::API::Recurring::AutoBill::VERSION = '0.22';
+  $Net::FreshBooks::API::Recurring::AutoBill::VERSION = '0.23';
 }
 
 use Net::FreshBooks::API::Recurring::AutoBill::Card;
@@ -82,7 +82,7 @@ Net::FreshBooks::API::Recurring::AutoBill - Adds AutoBill support to FreshBooks 
 
 =head1 VERSION
 
-version 0.22
+version 0.23
 
 =head1 SYNOPSIS
 

@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Iterator;
 {
-  $Net::FreshBooks::API::Iterator::VERSION = '0.22';
+  $Net::FreshBooks::API::Iterator::VERSION = '0.23';
 }
 
 use Moose;
@@ -89,7 +89,26 @@ Net::FreshBooks::API::Iterator - FreshBooks Iterator objects
 
 =head1 VERSION
 
-version 0.22
+version 0.23
+
+=head1 SYNOPSIS
+
+You should never need to create an Iterator yourself.  Iterators are created
+via the list() method.  However, you should be aware that iterators do not
+currently handle pagination for you.  So, something like this will let you
+page through your results.
+
+    my $page     = 1;
+    my $per_page = 50;
+    while ( 1 ) {
+        my $invoices
+            = $fb->invoice->list( { page => $page, per_page => $per_page } );
+        while ( my $invoice = $invoices->next ) {
+            print $invoice->invoice_id . "\n";
+        }
+        last if $page >= $invoices->pages;
+        ++$page;
+    }
 
 =head2 new
 

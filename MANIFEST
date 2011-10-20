@@ -3,11 +3,10 @@ Changes
 INSTALL
 LICENSE
 MANIFEST
-META.yml
+META.json
 Makefile.PL
 README
 TODO
-bacchus-nfa.komodoproject
 dist.ini
 examples/OAuthDemo.pm
 examples/create_recurring_item.pl

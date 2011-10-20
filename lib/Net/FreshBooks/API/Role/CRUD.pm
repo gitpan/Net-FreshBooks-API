@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Role::CRUD;
 {
-  $Net::FreshBooks::API::Role::CRUD::VERSION = '0.22';
+  $Net::FreshBooks::API::Role::CRUD::VERSION = '0.23';
 }
 
 use Moose::Role;
@@ -119,7 +119,7 @@ Net::FreshBooks::API::Role::CRUD - Create, Read and Update roles
 
 =head1 VERSION
 
-version 0.22
+version 0.23
 
 =head1 SYNOPSIS
 

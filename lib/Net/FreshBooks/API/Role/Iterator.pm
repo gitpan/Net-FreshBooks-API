@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Role::Iterator;
 {
-  $Net::FreshBooks::API::Role::Iterator::VERSION = '0.22';
+  $Net::FreshBooks::API::Role::Iterator::VERSION = '0.23';
 }
 
 use Moose::Role;
@@ -80,7 +80,7 @@ Net::FreshBooks::API::Role::Iterator - Read-only roles
 
 =head1 VERSION
 
-version 0.22
+version 0.23
 
 =head1 SYNOPSIS
 

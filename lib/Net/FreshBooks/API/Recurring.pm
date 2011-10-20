@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Recurring;
 {
-  $Net::FreshBooks::API::Recurring::VERSION = '0.22';
+  $Net::FreshBooks::API::Recurring::VERSION = '0.23';
 }
 
 use Moose;
@@ -92,7 +92,7 @@ Net::FreshBooks::API::Recurring - FreshBooks Recurring Item access
 
 =head1 VERSION
 
-version 0.22
+version 0.23
 
 =head1 SYNOPSIS
 

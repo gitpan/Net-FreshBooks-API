@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Role::Common;
 {
-  $Net::FreshBooks::API::Role::Common::VERSION = '0.22';
+  $Net::FreshBooks::API::Role::Common::VERSION = '0.23';
 }
 
 use Moose::Role;
@@ -65,7 +65,7 @@ Net::FreshBooks::API::Role::Common - Roles common to both Base.pm and API.pm
 
 =head1 VERSION
 
-version 0.22
+version 0.23
 
 =head1 SYNOPSIS
 

@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Base;
 {
-  $Net::FreshBooks::API::Base::VERSION = '0.22';
+  $Net::FreshBooks::API::Base::VERSION = '0.23';
 }
 
 use Moose;
@@ -293,7 +293,7 @@ sub response_xml_to_node {
 
     if ( $response_status ne 'ok' ) {
         my $msg = XMLin( $xml );
-        warn $self->_sent_xml;
+        warn $self->_sent_xml if $self->verbose;
         my $error = "FreshBooks server returned error: '$msg->{error}'";
         $self->_handle_server_error( $error );
     }
@@ -382,7 +382,7 @@ Net::FreshBooks::API::Base - Base class
 
 =head1 VERSION
 
-version 0.22
+version 0.23
 
 =head2 new_from_node
 

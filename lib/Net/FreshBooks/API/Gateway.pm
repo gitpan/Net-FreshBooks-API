@@ -3,7 +3,7 @@ use warnings;
 
 package Net::FreshBooks::API::Gateway;
 {
-  $Net::FreshBooks::API::Gateway::VERSION = '0.22';
+  $Net::FreshBooks::API::Gateway::VERSION = '0.23';
 }
 
 use Moose;
@@ -37,7 +37,7 @@ Net::FreshBooks::API::Gateway - List gateways available in your FreshBooks accou
 
 =head1 VERSION
 
-version 0.22
+version 0.23
 
 =head1 SYNOPSIS
 
