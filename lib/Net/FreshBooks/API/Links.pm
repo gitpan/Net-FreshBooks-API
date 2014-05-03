@@ -2,10 +2,7 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API::Links;
-{
-  $Net::FreshBooks::API::Links::VERSION = '0.23';
-}
-
+$Net::FreshBooks::API::Links::VERSION = '0.24';
 use Moose;
 extends 'Net::FreshBooks::API::Base';
 
@@ -26,9 +23,11 @@ __PACKAGE__->meta->make_immutable();
 
 # ABSTRACT: Provides FreshBooks Link objects to Clients and Invoices
 
-
 __END__
+
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 
@@ -36,7 +35,7 @@ Net::FreshBooks::API::Links - Provides FreshBooks Link objects to Clients and In
 
 =head1 VERSION
 
-version 0.23
+version 0.24
 
 =head1 SYNOPSIS
 
@@ -91,4 +90,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

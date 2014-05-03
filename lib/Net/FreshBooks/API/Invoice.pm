@@ -2,10 +2,7 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API::Invoice;
-{
-  $Net::FreshBooks::API::Invoice::VERSION = '0.23';
-}
-
+$Net::FreshBooks::API::Invoice::VERSION = '0.24';
 use Moose;
 extends 'Net::FreshBooks::API::Base';
 with 'Net::FreshBooks::API::Role::CRUD';
@@ -17,8 +14,13 @@ has $_ => ( is => _fields()->{$_}->{is} ) for sort keys %{ _fields() };
 sub _fields {
     return {
 
-        amount        => { is => 'ro' },
-        client_id     => { is => 'rw' },
+        amount    => { is => 'ro' },
+        client_id => { is => 'rw' },
+        contacts  => {
+            is           => 'rw',
+            made_of      => 'Net::FreshBooks::API::Client::Contact',
+            presented_as => 'array',
+        },
         currency_code => { is => 'rw' },
         date          => { is => 'rw' },
         discount      => { is => 'rw' },
@@ -67,9 +69,11 @@ __PACKAGE__->meta->make_immutable();
 
 # ABSTRACT: FreshBooks Invoice access
 
-
 __END__
+
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 
@@ -77,7 +81,7 @@ Net::FreshBooks::API::Invoice - FreshBooks Invoice access
 
 =head1 VERSION
 
-version 0.23
+version 0.24
 
 =head1 SYNOPSIS
 
@@ -190,4 +194,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

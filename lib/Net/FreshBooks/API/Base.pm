@@ -2,10 +2,7 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API::Base;
-{
-  $Net::FreshBooks::API::Base::VERSION = '0.23';
-}
-
+$Net::FreshBooks::API::Base::VERSION = '0.24';
 use Moose;
 
 with 'Net::FreshBooks::API::Role::Common';
@@ -14,7 +11,7 @@ use Carp qw( carp croak );
 use Clone qw(clone);
 use Data::Dump qw( dump );
 use Scalar::Util qw( blessed reftype );
-use XML::LibXML ':libxml';
+use XML::LibXML qw( XML_ELEMENT_NODE );
 use XML::Simple;
 use LWP::UserAgent;
 
@@ -232,7 +229,7 @@ sub construct_element {
 
         # scalar values are text nodes
         elsif ( ref $val eq '' ) {
-            $element->appendTextChild( $key, $val );
+            $element->appendTextChild( $key, $val || '' );
         }
 
         # arrayrefs are groups of nested values
@@ -372,9 +369,11 @@ __PACKAGE__->meta->make_immutable( inline_constructor => 1 );
 
 # ABSTRACT: Base class
 
-
 __END__
+
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 
@@ -382,7 +381,7 @@ Net::FreshBooks::API::Base - Base class
 
 =head1 VERSION
 
-version 0.23
+version 0.24
 
 =head2 new_from_node
 
@@ -526,4 +525,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

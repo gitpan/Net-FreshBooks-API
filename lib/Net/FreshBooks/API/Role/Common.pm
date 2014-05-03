@@ -2,10 +2,7 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API::Role::Common;
-{
-  $Net::FreshBooks::API::Role::Common::VERSION = '0.23';
-}
-
+$Net::FreshBooks::API::Role::Common::VERSION = '0.24';
 use Moose::Role;
 use Carp qw( carp croak );
 use Data::Dump qw( dump );
@@ -18,7 +15,8 @@ has '_return_xml'  => ( is => 'rw', isa => 'Str' );
 has '_request_xml' => ( is => 'rw', isa => 'Str' );
 
 sub _build_die_on_server_error { return 1; }
-sub _build_verbose             {
+
+sub _build_verbose {
     return 1 if $ENV{VERBOSE} || $ENV{DEBUG};
     return 0;
 }
@@ -55,9 +53,11 @@ sub _log {    ## no critic
 
 # ABSTRACT: Roles common to both Base.pm and API.pm
 
-
 __END__
+
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 
@@ -65,7 +65,7 @@ Net::FreshBooks::API::Role::Common - Roles common to both Base.pm and API.pm
 
 =head1 VERSION
 
-version 0.23
+version 0.24
 
 =head1 SYNOPSIS
 
@@ -97,4 +97,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

@@ -2,10 +2,7 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API::Recurring::AutoBill::Card::Expiration;
-{
-  $Net::FreshBooks::API::Recurring::AutoBill::Card::Expiration::VERSION = '0.23';
-}
-
+$Net::FreshBooks::API::Recurring::AutoBill::Card::Expiration::VERSION = '0.24';
 use Moose;
 extends 'Net::FreshBooks::API::Base';
 
@@ -36,7 +33,10 @@ __PACKAGE__->meta->make_immutable();
 # ABSTRACT: FreshBooks Autobill Credit Card Expiration access
 
 __END__
+
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 
@@ -44,7 +44,7 @@ Net::FreshBooks::API::Recurring::AutoBill::Card::Expiration - FreshBooks Autobil
 
 =head1 VERSION
 
-version 0.23
+version 0.24
 
 =head1 AUTHORS
 
@@ -68,4 +68,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

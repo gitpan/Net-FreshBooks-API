@@ -12,21 +12,22 @@ use Net::FreshBooks::API;
 use Net::FreshBooks::API::Client::Contact;
 use Test::WWW::Mechanize;
 
-plan -r 't/config.pl' && require('t/config.pl')
+plan -r 't/config.pl'
+    && require( 't/config.pl' )
+    && $ENV{FB_LIVE_TESTS}
     ? ( tests => 28 )
-    : ( skip_all => "Need test connection details in t/config.pl"
-        . " - see t/config_sample.pl for details" );
+    : (
+    skip_all => 'Set FB_LIVE_TESTS to true in your %ENV to run live tests' );
 
-my $test_email = FBTest->get('test_email') || die;
+my $test_email = FBTest->get( 'test_email' ) || die;
 
 # create the FB object
 my $fb = Net::FreshBooks::API->new(
-    {   auth_token   => FBTest->get('auth_token'),
-        account_name => FBTest->get('account_name'),
+    {   auth_token   => FBTest->get( 'auth_token' ),
+        account_name => FBTest->get( 'account_name' ),
     }
 );
 ok $fb, "created the FB object";
-
 
 $fb->delete_everything_from_this_test_account();
 
@@ -50,7 +51,7 @@ ok $client, "Created a new client";
 
 # update the client - check that the changes stick
 isnt $client->organization, 'foobar', 'organization is not foobar';
-$client->organization('foobar');
+$client->organization( 'foobar' );
 is $client->organization, 'foobar', 'organization is foobar';
 ok $client->update, "update the client";
 {
@@ -60,7 +61,7 @@ ok $client->update, "update the client";
         "Client has been updated on FB";
 }
 
-foreach my $alpha ('a'..'e') {
+foreach my $alpha ( 'a' .. 'e' ) {
 
     ok( $client->add_contact(
             {   username   => 'net' . time() . $alpha,
@@ -76,17 +77,20 @@ foreach my $alpha ('a'..'e') {
 }
 my $dt = DateTime->now();
 $client->organization( $dt->ymd . '-' . $dt->hms );
-#$client->verbose(1);
 
 ok( $client->update, "can update client" );
 
-my $updated = $fb->client->get({ client_id => $client->client_id });
+my $updated = $fb->client->get( { client_id => $client->client_id } );
 
-foreach my $contact (@{$client->contacts}) {
-    diag( $contact->last_name );
+foreach my $contact ( @{ $updated->contacts } ) {
+    diag(
+        sprintf(
+            "contact: %s (%s)",
+            $contact->last_name, $contact->contact_id
+        )
+    );
 }
-
-cmp_ok( scalar @{$client->contacts}, '==', 5, "5 contacts created");
+cmp_ok( scalar @{ $client->contacts }, '==', 5, "5 contacts created" );
 
 # create an invoice for this client
 my $return_uri = 'http://www.google.com';

@@ -2,9 +2,7 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API;
-{
-  $Net::FreshBooks::API::VERSION = '0.23';
-}
+$Net::FreshBooks::API::VERSION = '0.24';
 use Moose;
 
 with 'Net::FreshBooks::API::Role::Common';
@@ -28,12 +26,12 @@ use Path::Class;
 use WWW::Mechanize;
 use URI;
 
-has 'account_name'        => ( is => 'rw' );
-has 'auth_token'          => ( is => 'rw' );
-has 'api_version'         => ( is => 'rw', default => 2.1 );
-has 'auth_realm'          => ( is => 'rw', default => 'FreshBooks' );
-has 'ua'                  => ( is => 'rw', lazy_build => 1 );
-has 'ua_name'             => ( is => 'rw', lazy_build => 1 );
+has 'account_name' => ( is => 'rw' );
+has 'auth_token'   => ( is => 'rw' );
+has 'api_version'  => ( is => 'rw', default => 2.1 );
+has 'auth_realm'   => ( is => 'rw', default => 'FreshBooks' );
+has 'ua'           => ( is => 'rw', lazy_build => 1 );
+has 'ua_name'      => ( is => 'rw', lazy_build => 1 );
 
 # oauth methods
 has 'access_token'        => ( is => 'rw' );
@@ -134,7 +132,7 @@ sub _build_ua {
         $self->auth_token,                # username
         ''                                # password (none - all in username)
     );
-    
+
     $ua->credentials(                     #
         $self->service_url->host_port,    # net loc
         '',                               # realm (none)
@@ -144,7 +142,6 @@ sub _build_ua {
 
     return $ua;
 }
-
 
 sub delete_everything_from_this_test_account {
 
@@ -217,9 +214,11 @@ __PACKAGE__->meta->make_immutable();
 
 # ABSTRACT: Easy OO access to the FreshBooks.com API
 
-
 __END__
+
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 
@@ -227,7 +226,7 @@ Net::FreshBooks::API - Easy OO access to the FreshBooks.com API
 
 =head1 VERSION
 
-version 0.23
+version 0.24
 
 =head1 SYNOPSIS
 
@@ -553,4 +552,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

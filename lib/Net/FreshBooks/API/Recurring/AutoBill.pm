@@ -2,10 +2,7 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API::Recurring::AutoBill;
-{
-  $Net::FreshBooks::API::Recurring::AutoBill::VERSION = '0.23';
-}
-
+$Net::FreshBooks::API::Recurring::AutoBill::VERSION = '0.24';
 use Net::FreshBooks::API::Recurring::AutoBill::Card;
 
 use Moose;
@@ -47,8 +44,8 @@ sub _validates {
 
     return 0 if $self->card->number && $self->card->number =~ m{\*};
 
-    return 1 if 
-        ( $self->gateway_name
+    return 1
+        if ( $self->gateway_name
         || $self->card->name
         || $self->card->month
         || $self->card->year );
@@ -72,9 +69,11 @@ __PACKAGE__->meta->make_immutable();
 
 # ABSTRACT: Adds AutoBill support to FreshBooks Recurring Items
 
-
 __END__
+
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 
@@ -82,7 +81,7 @@ Net::FreshBooks::API::Recurring::AutoBill - Adds AutoBill support to FreshBooks 
 
 =head1 VERSION
 
-version 0.23
+version 0.24
 
 =head1 SYNOPSIS
 
@@ -180,4 +179,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

@@ -2,10 +2,7 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API::Role::Iterator;
-{
-  $Net::FreshBooks::API::Role::Iterator::VERSION = '0.23';
-}
-
+$Net::FreshBooks::API::Role::Iterator::VERSION = '0.24';
 use Moose::Role;
 use Data::Dump qw( dump );
 
@@ -31,7 +28,7 @@ sub get_all {
     # override any pagination
     $args->{per_page} = 100;
 
-    my @all     = ();
+    my @all      = ();
     my $per_page = 100;
     my $page     = 1;
 
@@ -70,9 +67,11 @@ sub list {
 
 # ABSTRACT: Read-only roles
 
-
 __END__
+
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 
@@ -80,7 +79,7 @@ Net::FreshBooks::API::Role::Iterator - Read-only roles
 
 =head1 VERSION
 
-version 0.23
+version 0.24
 
 =head1 SYNOPSIS
 
@@ -122,4 +121,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

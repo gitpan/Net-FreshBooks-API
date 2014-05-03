@@ -2,16 +2,13 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API::Client::Contact;
-{
-  $Net::FreshBooks::API::Client::Contact::VERSION = '0.23';
-}
-
+$Net::FreshBooks::API::Client::Contact::VERSION = '0.24';
 use Moose;
 extends 'Net::FreshBooks::API::Base';
 
 has $_ => ( is => _fields()->{$_}->{is} ) for sort keys %{ _fields() };
 
-sub node_name { return 'contact' };
+sub node_name { return 'contact' }
 
 sub _fields {
     return {
@@ -25,17 +22,17 @@ sub _fields {
     };
 }
 
-
-
 __PACKAGE__->meta->make_immutable();
 
 1;
 
 # ABSTRACT: Provides FreshBooks Contact objects to Clients and Invoices
 
-
 __END__
+
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 
@@ -43,7 +40,7 @@ Net::FreshBooks::API::Client::Contact - Provides FreshBooks Contact objects to C
 
 =head1 VERSION
 
-version 0.23
+version 0.24
 
 =head1 SYNOPSIS
 
@@ -81,4 +78,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

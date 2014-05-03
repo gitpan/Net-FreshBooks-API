@@ -7,10 +7,12 @@ use Data::Dump qw( dump );
 use DateTime;
 use Test::More;
 
-plan -r 't/config.pl' && require( 't/config.pl' )
+plan -r 't/config.pl'
+    && require( 't/config.pl' )
+    && $ENV{FB_LIVE_TESTS}
     ? ( tests => 102 )
-    : ( skip_all => "Need test connection details in t/config.pl"
-        . " - see t/config_sample.pl for details" );
+    : (
+    skip_all => 'Set FB_LIVE_TESTS to true in your %ENV to run live tests' );
 
 use_ok 'Net::FreshBooks::API';
 
@@ -18,7 +20,7 @@ use_ok 'Net::FreshBooks::API';
 my $fb = Net::FreshBooks::API->new(
     {   auth_token   => FBTest->get( 'auth_token' ),
         account_name => FBTest->get( 'account_name' ),
-        verbose     => $ENV{'FB_VERBOSE'} || 0,
+        verbose      => $ENV{'FB_VERBOSE'} || 0,
     }
 );
 
@@ -29,8 +31,8 @@ diag( "verbose: " . $fb->verbose );
 
 my $recurring = $fb->recurring;
 
-foreach my $method ( sort keys %{$recurring->_fields() } ) {
-    can_ok( $recurring, $method );    
+foreach my $method ( sort keys %{ $recurring->_fields() } ) {
+    can_ok( $recurring, $method );
 }
 
 isa_ok( $recurring, "Net::FreshBooks::API::Recurring" );

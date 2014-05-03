@@ -2,15 +2,11 @@ use strict;
 use warnings;
 
 package Net::FreshBooks::API::Iterator;
-{
-  $Net::FreshBooks::API::Iterator::VERSION = '0.23';
-}
-
+$Net::FreshBooks::API::Iterator::VERSION = '0.24';
 use Moose;
 
-use Data::Dump qw( dump );
 use Lingua::EN::Inflect qw( PL );
-use XML::LibXML ':libxml';
+use XML::LibXML qw( XML_ELEMENT_NODE );
 
 has 'parent_object' => ( is => 'rw' );    # The object we are iterating for
 has 'args'          => ( is => 'rw' );    # args used in the search
@@ -44,8 +40,8 @@ sub new {
     my $parser = XML::LibXML->new();
 
     my @item_nodes =    #
-        map { $parser->parse_string( $_->toString ) }    # recreate
-        grep { $_->nodeType eq XML_ELEMENT_NODE }        # filter
+        map  { $parser->parse_string( $_->toString ) }    # recreate
+        grep { $_->nodeType eq XML_ELEMENT_NODE }         # filter
         $list->childNodes;
 
     $self->item_nodes( \@item_nodes );
@@ -53,7 +49,7 @@ sub new {
     return $self;
 }
 
-sub next {                                               ## no critic
+sub next {                                                ## no critic
     ## use critic
     my $self = shift;
 
@@ -79,9 +75,11 @@ __PACKAGE__->meta->make_immutable( inline_constructor => 0 );
 
 # ABSTRACT: FreshBooks Iterator objects
 
-
 __END__
+
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 
@@ -89,7 +87,7 @@ Net::FreshBooks::API::Iterator - FreshBooks Iterator objects
 
 =head1 VERSION
 
-version 0.23
+version 0.24
 
 =head1 SYNOPSIS
 
@@ -162,4 +160,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
